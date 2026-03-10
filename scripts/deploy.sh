@@ -199,14 +199,41 @@ setup_code() {
     if [ "$use_git" != "n" ] && [ "$use_git" != "N" ]; then
         read -p "请输入 Git 仓库地址：" repo_url
         if [ -n "$repo_url" ]; then
+            # 检查是否已经是 git 仓库
             if [ -d "nodejs/.git" ]; then
-                log_info "更新现有代码..."
-                cd nodejs && git pull
+                log_info "检测到现有 Git 仓库，更新代码..."
+                cd nodejs && git pull || log_warn "git pull 失败，继续执行"
+            elif [ -d ".git" ]; then
+                # 当前目录是 git 仓库，检查 remote
+                current_remote=$(git remote get-url origin 2>/dev/null || echo "")
+                if [ "$current_remote" = "$repo_url" ]; then
+                    log_info "检测到现有 Git 仓库，更新代码..."
+                    git pull || log_warn "git pull 失败，继续执行"
+                else
+                    log_warn "当前目录已存在 Git 仓库，但 remote 不匹配"
+                    log_info "跳过克隆，继续执行后续步骤..."
+                fi
+            elif [ -d "nodejs" ] && [ "$(ls -A nodejs)" ]; then
+                log_warn "nodejs 目录已存在且不为空，跳过克隆"
+                log_info "继续安装依赖..."
             else
+                # 目录为空或不存在，可以克隆
+                if [ -d "nodejs" ]; then
+                    rmdir nodejs 2>/dev/null || true
+                fi
                 log_info "克隆代码..."
-                git clone "$repo_url" .
+                git clone "$repo_url" nodejs || {
+                    log_error "克隆失败，请检查仓库地址"
+                    return 1
+                }
             fi
         fi
+    fi
+    
+    # 检查 nodejs 目录是否存在
+    if [ ! -d "nodejs" ]; then
+        log_error "nodejs 目录不存在，请检查是否克隆成功"
+        return 1
     fi
     
     # 安装 npm 依赖
