@@ -1,0 +1,301 @@
+{
+  "subtitles": [
+    {
+      "start": 0,
+      "end": 2800,
+      "groupStart": 0,
+      "groupEnd": 2800,
+      "text": "朋友们 我提出了 AIS 时代伟大愿景",
+      "groupId": 0,
+      "position": 0,
+      "totalInGroup": 1,
+      "keyword": "AIS 时代"
+    },
+    {
+      "start": 3300,
+      "end": 7200,
+      "groupStart": 3300,
+      "groupEnd": 7200,
+      "text": "IDA to Money OS 想法到前操作系统",
+      "groupId": 1,
+      "position": 0,
+      "totalInGroup": 1,
+      "keyword": "IDA to Money OS"
+    },
+    {
+      "start": 7800,
+      "end": 10800,
+      "groupStart": 7800,
+      "groupEnd": 10800,
+      "text": "为此我们设计了 AIS 时代人人都需要的资产",
+      "groupId": 2,
+      "position": 0,
+      "totalInGroup": 1,
+      "keyword": "人人都需要的资产"
+    },
+    {
+      "start": 10800,
+      "end": 14300,
+      "groupStart": 10800,
+      "groupEnd": 14300,
+      "text": "图灵 AI 身份 ID",
+      "groupId": 3,
+      "position": 0,
+      "totalInGroup": 2,
+      "keyword": "图灵 AI"
+    },
+    {
+      "start": 10800,
+      "end": 14300,
+      "groupStart": 10800,
+      "groupEnd": 14300,
+      "text": "专属每一位创造者",
+      "groupId": 3,
+      "position": 1,
+      "totalInGroup": 2,
+      "keyword": "创造者"
+    },
+    {
+      "start": 14600,
+      "end": 16200,
+      "groupStart": 14600,
+      "groupEnd": 16200,
+      "text": "正如王剑院士所言",
+      "groupId": 4,
+      "position": 0,
+      "totalInGroup": 1,
+      "keyword": ""
+    },
+    {
+      "start": 16500,
+      "end": 20200,
+      "groupStart": 16500,
+      "groupEnd": 20200,
+      "text": "算力革命能实现",
+      "groupId": 5,
+      "position": 0,
+      "totalInGroup": 2,
+      "keyword": "算力革命"
+    },
+    {
+      "start": 18500,
+      "end": 20200,
+      "groupStart": 16500,
+      "groupEnd": 20200,
+      "text": "创造10倍价值",
+      "groupId": 5,
+      "position": 1,
+      "totalInGroup": 2,
+      "keyword": "10倍价值"
+    },
+    {
+      "start": 20600,
+      "end": 23000,
+      "groupStart": 20600,
+      "groupEnd": 23000,
+      "text": "而AI不是替代人类",
+      "groupId": 6,
+      "position": 0,
+      "totalInGroup": 2,
+      "keyword": "替代人类"
+    },
+    {
+      "start": 20600,
+      "end": 23000,
+      "groupStart": 20600,
+      "groupEnd": 23000,
+      "text": "放大你的创造力",
+      "groupId": 6,
+      "position": 1,
+      "totalInGroup": 2,
+      "keyword": "放大"
+    },
+    {
+      "start": 23200,
+      "end": 25400,
+      "groupStart": 23200,
+      "groupEnd": 25400,
+      "text": "以 IDA to Money OS 为核心",
+      "groupId": 7,
+      "position": 0,
+      "totalInGroup": 1,
+      "keyword": "IDA to Money OS"
+    },
+    {
+      "start": 25700,
+      "end": 28000,
+      "groupStart": 25700,
+      "groupEnd": 28000,
+      "text": "你只需一个想法",
+      "groupId": 8,
+      "position": 0,
+      "totalInGroup": 2,
+      "keyword": "一个想法"
+    },
+    {
+      "start": 25700,
+      "end": 28000,
+      "groupStart": 25700,
+      "groupEnd": 28000,
+      "text": "繁琐流程用AI搞定",
+      "groupId": 8,
+      "position": 1,
+      "totalInGroup": 2,
+      "keyword": "AI搞定"
+    },
+    {
+      "start": 28300,
+      "end": 29600,
+      "groupStart": 28300,
+      "groupEnd": 29600,
+      "text": "直达财富结果",
+      "groupId": 9,
+      "position": 0,
+      "totalInGroup": 1,
+      "keyword": "财富结果"
+    },
+    {
+      "start": 29900,
+      "end": 32300,
+      "groupStart": 29900,
+      "groupEnd": 32300,
+      "text": "权力路商业 Agent",
+      "groupId": 10,
+      "position": 0,
+      "totalInGroup": 2,
+      "keyword": "商业 Agent"
+    },
+    {
+      "start": 29900,
+      "end": 32300,
+      "groupStart": 29900,
+      "groupEnd": 32300,
+      "text": "搭配三大 AI 克龙",
+      "groupId": 10,
+      "position": 1,
+      "totalInGroup": 2,
+      "keyword": "三大 AI 克龙"
+    },
+    {
+      "start": 32500,
+      "end": 33700,
+      "groupStart": 32500,
+      "groupEnd": 33700,
+      "text": "轻松策划 推广 成交",
+      "groupId": 11,
+      "position": 0,
+      "totalInGroup": 1,
+      "keyword": "策划 推广 成交"
+    },
+    {
+      "start": 34100,
+      "end": 36900,
+      "groupStart": 34100,
+      "groupEnd": 36900,
+      "text": "初始发行一万枚专属 ID",
+      "groupId": 12,
+      "position": 0,
+      "totalInGroup": 1,
+      "keyword": "一万枚专属 ID"
+    },
+    {
+      "start": 37200,
+      "end": 39600,
+      "groupStart": 37200,
+      "groupEnd": 39600,
+      "text": "由 100 位创始会员推动",
+      "groupId": 13,
+      "position": 0,
+      "totalInGroup": 1,
+      "keyword": "100 位创始会员"
+    },
+    {
+      "start": 39900,
+      "end": 42100,
+      "groupStart": 39900,
+      "groupEnd": 42100,
+      "text": "邀请字加计分机力",
+      "groupId": 14,
+      "position": 0,
+      "totalInGroup": 2,
+      "keyword": "邀请加分"
+    },
+    {
+      "start": 39900,
+      "end": 42100,
+      "groupStart": 39900,
+      "groupEnd": 42100,
+      "text": "藏着 AI 时代全新红利",
+      "groupId": 14,
+      "position": 1,
+      "totalInGroup": 2,
+      "keyword": "全新红利"
+    },
+    {
+      "start": 42300,
+      "end": 44100,
+      "groupStart": 42300,
+      "groupEnd": 44100,
+      "text": "记住口号",
+      "groupId": 15,
+      "position": 0,
+      "totalInGroup": 3,
+      "keyword": ""
+    },
+    {
+      "start": 42300,
+      "end": 44100,
+      "groupStart": 42300,
+      "groupEnd": 44100,
+      "text": "人类负责创造真正价值",
+      "groupId": 15,
+      "position": 1,
+      "totalInGroup": 3,
+      "keyword": "创造真正价值"
+    },
+    {
+      "start": 42300,
+      "end": 44100,
+      "groupStart": 42300,
+      "groupEnd": 44100,
+      "text": "其他的交给你的图灵 AI 分身",
+      "groupId": 15,
+      "position": 2,
+      "totalInGroup": 3,
+      "keyword": "图灵 AI 分身"
+    },
+    {
+      "start": 44400,
+      "end": 46200,
+      "groupStart": 44400,
+      "groupEnd": 46200,
+      "text": "如何拿到专属 ID 抢占先机",
+      "groupId": 16,
+      "position": 0,
+      "totalInGroup": 1,
+      "keyword": "抢占先机"
+    },
+    {
+      "start": 46500,
+      "end": 48400,
+      "groupStart": 46500,
+      "groupEnd": 48400,
+      "text": "评论区扣入局",
+      "groupId": 17,
+      "position": 0,
+      "totalInGroup": 2,
+      "keyword": "扣入局"
+    },
+    {
+      "start": 46500,
+      "end": 48400,
+      "groupStart": 46500,
+      "groupEnd": 48400,
+      "text": "我悄悄告诉你答案",
+      "groupId": 17,
+      "position": 1,
+      "totalInGroup": 2,
+      "keyword": "告诉你答案"
+    }
+  ]
+}

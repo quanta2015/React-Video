@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.volcengine.com)",
+      "Bash(npm install:*)",
+      "Bash(npx ts-node:*)",
+      "Bash(npx tsc:*)",
+      "Bash(ffprobe:*)",
+      "Bash(sysctl:*)",
+      "Bash(tree:*)",
+      "Bash(pkill:*)",
+      "Bash(python3:*)",
+      "Bash(pip3 install:*)",
+      "Bash(npm run build:*)",
+      "Bash(export PATH=\"/usr/local/bin:/opt/homebrew/bin:$PATH\")",
+      "Bash(echo:*)",
+      "Bash(fc-query:*)",
+      "Bash(chmod:*)"
+    ]
+  }
+}

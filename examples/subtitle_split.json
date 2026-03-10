@@ -1,0 +1,1765 @@
+{
+  "subtitles": [
+  {
+    "start": 110,
+    "end": 590,
+    "groupStart": 110,
+    "groupEnd": 590,
+    "text": "朋友们",
+    "groupId": 0,
+    "position": 0,
+    "totalInGroup": 1,
+    "keyword": "朋友们",
+    "words": [
+    {
+      "text": "朋",
+      "start": 110,
+      "end": 270
+    },
+    {
+      "text": "友",
+      "start": 270,
+      "end": 350
+    },
+    {
+      "text": "们",
+      "start": 350,
+      "end": 590
+    }]
+  },
+  {
+    "start": 670,
+    "end": 1470,
+    "groupStart": 670,
+    "groupEnd": 2630,
+    "text": "我提出了",
+    "groupId": 1,
+    "position": 0,
+    "totalInGroup": 2,
+    "keyword": "提出",
+    "words": [
+    {
+      "text": "我",
+      "start": 670,
+      "end": 1030
+    },
+    {
+      "text": "提",
+      "start": 1030,
+      "end": 1190
+    },
+    {
+      "text": "出",
+      "start": 1190,
+      "end": 1310
+    },
+    {
+      "text": "了",
+      "start": 1310,
+      "end": 1470
+    }]
+  },
+  {
+    "start": 1510,
+    "end": 2630,
+    "groupStart": 670,
+    "groupEnd": 2630,
+    "text": "AI时代伟大愿景",
+    "groupId": 1,
+    "position": 1,
+    "totalInGroup": 2,
+    "keyword": "伟大愿景",
+    "words": [
+    {
+      "text": "AI",
+      "start": 1510,
+      "end": 1630
+    },
+    {
+      "text": "时",
+      "start": 1710,
+      "end": 1830
+    },
+    {
+      "text": "代",
+      "start": 1830,
+      "end": 1950
+    },
+    {
+      "text": "伟",
+      "start": 1990,
+      "end": 2150
+    },
+    {
+      "text": "大",
+      "start": 2150,
+      "end": 2310
+    },
+    {
+      "text": "愿",
+      "start": 2310,
+      "end": 2470
+    },
+    {
+      "text": "景",
+      "start": 2510,
+      "end": 2630
+    }]
+  },
+  {
+    "start": 2790,
+    "end": 5070,
+    "groupStart": 2790,
+    "groupEnd": 5070,
+    "text": "ID to money OS",
+    "groupId": 2,
+    "position": 0,
+    "totalInGroup": 1,
+    "keyword": "money",
+    "words": [
+    {
+      "text": "ID",
+      "start": 2790,
+      "end": 3470
+    },
+    {
+      "text": "to",
+      "start": 3830,
+      "end": 3990
+    },
+    {
+      "text": "money",
+      "start": 4070,
+      "end": 4230
+    },
+    {
+      "text": "OS",
+      "start": 4430,
+      "end": 5070
+    }]
+  },
+  {
+    "start": 5390,
+    "end": 7030,
+    "groupStart": 5390,
+    "groupEnd": 7030,
+    "text": "想法到钱操作系统",
+    "groupId": 3,
+    "position": 0,
+    "totalInGroup": 1,
+    "keyword": "操作系统",
+    "words": [
+    {
+      "text": "想",
+      "start": 5390,
+      "end": 5670
+    },
+    {
+      "text": "法",
+      "start": 5670,
+      "end": 5830
+    },
+    {
+      "text": "到",
+      "start": 5830,
+      "end": 6070
+    },
+    {
+      "text": "钱",
+      "start": 6110,
+      "end": 6270
+    },
+    {
+      "text": "操",
+      "start": 6350,
+      "end": 6510
+    },
+    {
+      "text": "作",
+      "start": 6510,
+      "end": 6630
+    },
+    {
+      "text": "系",
+      "start": 6630,
+      "end": 6830
+    },
+    {
+      "text": "统",
+      "start": 6830,
+      "end": 7030
+    }]
+  },
+  {
+    "start": 7750,
+    "end": 8750,
+    "groupStart": 7750,
+    "groupEnd": 10710,
+    "text": "为此我们设计了",
+    "groupId": 4,
+    "position": 0,
+    "totalInGroup": 3,
+    "keyword": "设计",
+    "words": [
+    {
+      "text": "为",
+      "start": 7750,
+      "end": 7990
+    },
+    {
+      "text": "此",
+      "start": 7990,
+      "end": 8150
+    },
+    {
+      "text": "我",
+      "start": 8150,
+      "end": 8270
+    },
+    {
+      "text": "们",
+      "start": 8270,
+      "end": 8390
+    },
+    {
+      "text": "设",
+      "start": 8390,
+      "end": 8550
+    },
+    {
+      "text": "计",
+      "start": 8550,
+      "end": 8630
+    },
+    {
+      "text": "了",
+      "start": 8710,
+      "end": 8750
+    }]
+  },
+  {
+    "start": 8870,
+    "end": 10030,
+    "groupStart": 7750,
+    "groupEnd": 10710,
+    "text": "AI时代人人都",
+    "groupId": 4,
+    "position": 1,
+    "totalInGroup": 3,
+    "keyword": "AI时代",
+    "words": [
+    {
+      "text": "AI",
+      "start": 8870,
+      "end": 8990
+    },
+    {
+      "text": "时",
+      "start": 9110,
+      "end": 9230
+    },
+    {
+      "text": "代",
+      "start": 9230,
+      "end": 9390
+    },
+    {
+      "text": "人",
+      "start": 9510,
+      "end": 9710
+    },
+    {
+      "text": "人",
+      "start": 9750,
+      "end": 9830
+    },
+    {
+      "text": "都",
+      "start": 9830,
+      "end": 10030
+    }]
+  },
+  {
+    "start": 10030,
+    "end": 10710,
+    "groupStart": 7750,
+    "groupEnd": 10710,
+    "text": "需要的资产",
+    "groupId": 4,
+    "position": 2,
+    "totalInGroup": 3,
+    "keyword": "资产",
+    "words": [
+    {
+      "text": "需",
+      "start": 10030,
+      "end": 10110
+    },
+    {
+      "text": "要",
+      "start": 10110,
+      "end": 10230
+    },
+    {
+      "text": "的",
+      "start": 10230,
+      "end": 10390
+    },
+    {
+      "text": "资",
+      "start": 10390,
+      "end": 10550
+    },
+    {
+      "text": "产",
+      "start": 10550,
+      "end": 10710
+    }]
+  },
+  {
+    "start": 10950,
+    "end": 12390,
+    "groupStart": 10950,
+    "groupEnd": 12390,
+    "text": "图灵AI身份ID",
+    "groupId": 5,
+    "position": 0,
+    "totalInGroup": 1,
+    "keyword": "图灵AI",
+    "words": [
+    {
+      "text": "图",
+      "start": 10950,
+      "end": 10990
+    },
+    {
+      "text": "灵",
+      "start": 11190,
+      "end": 11230
+    },
+    {
+      "text": "AI",
+      "start": 11390,
+      "end": 11550
+    },
+    {
+      "text": "身",
+      "start": 11630,
+      "end": 11750
+    },
+    {
+      "text": "份",
+      "start": 11750,
+      "end": 11910
+    },
+    {
+      "text": "ID",
+      "start": 11990,
+      "end": 12390
+    }]
+  },
+  {
+    "start": 12830,
+    "end": 14150,
+    "groupStart": 12830,
+    "groupEnd": 14150,
+    "text": "专属每一位创造者",
+    "groupId": 6,
+    "position": 0,
+    "totalInGroup": 1,
+    "keyword": "专属",
+    "words": [
+    {
+      "text": "专",
+      "start": 12830,
+      "end": 13030
+    },
+    {
+      "text": "属",
+      "start": 13030,
+      "end": 13230
+    },
+    {
+      "text": "每",
+      "start": 13230,
+      "end": 13390
+    },
+    {
+      "text": "一",
+      "start": 13390,
+      "end": 13470
+    },
+    {
+      "text": "位",
+      "start": 13470,
+      "end": 13590
+    },
+    {
+      "text": "创",
+      "start": 13590,
+      "end": 13750
+    },
+    {
+      "text": "造",
+      "start": 13750,
+      "end": 13910
+    },
+    {
+      "text": "者",
+      "start": 13910,
+      "end": 14150
+    }]
+  },
+  {
+    "start": 14590,
+    "end": 16070,
+    "groupStart": 14590,
+    "groupEnd": 16070,
+    "text": "正如王坚院士所言",
+    "groupId": 7,
+    "position": 0,
+    "totalInGroup": 1,
+    "keyword": "王坚院士",
+    "words": [
+    {
+      "text": "正",
+      "start": 14590,
+      "end": 14830
+    },
+    {
+      "text": "如",
+      "start": 14830,
+      "end": 14990
+    },
+    {
+      "text": "王",
+      "start": 14990,
+      "end": 15150
+    },
+    {
+      "text": "坚",
+      "start": 15230,
+      "end": 15270
+    },
+    {
+      "text": "院",
+      "start": 15390,
+      "end": 15510
+    },
+    {
+      "text": "士",
+      "start": 15510,
+      "end": 15630
+    },
+    {
+      "text": "所",
+      "start": 15670,
+      "end": 15830
+    },
+    {
+      "text": "言",
+      "start": 15830,
+      "end": 16070
+    }]
+  },
+  {
+    "start": 16590,
+    "end": 18030,
+    "groupStart": 16590,
+    "groupEnd": 20070,
+    "text": "算力革命能实现",
+    "groupId": 8,
+    "position": 0,
+    "totalInGroup": 3,
+    "keyword": "算力革命",
+    "words": [
+    {
+      "text": "算",
+      "start": 16590,
+      "end": 16830
+    },
+    {
+      "text": "力",
+      "start": 16830,
+      "end": 16990
+    },
+    {
+      "text": "革",
+      "start": 17030,
+      "end": 17230
+    },
+    {
+      "text": "命",
+      "start": 17230,
+      "end": 17390
+    },
+    {
+      "text": "能",
+      "start": 17470,
+      "end": 17750
+    },
+    {
+      "text": "实",
+      "start": 17750,
+      "end": 17910
+    },
+    {
+      "text": "现",
+      "start": 17910,
+      "end": 18030
+    }]
+  },
+  {
+    "start": 18030,
+    "end": 19070,
+    "groupStart": 16590,
+    "groupEnd": 20070,
+    "text": "一度电创造",
+    "groupId": 8,
+    "position": 1,
+    "totalInGroup": 3,
+    "keyword": "创造",
+    "words": [
+    {
+      "text": "一",
+      "start": 18030,
+      "end": 18190
+    },
+    {
+      "text": "度",
+      "start": 18190,
+      "end": 18350
+    },
+    {
+      "text": "电",
+      "start": 18350,
+      "end": 18590
+    },
+    {
+      "text": "创",
+      "start": 18710,
+      "end": 18910
+    },
+    {
+      "text": "造",
+      "start": 18910,
+      "end": 19070
+    }]
+  },
+  {
+    "start": 19070,
+    "end": 20070,
+    "groupStart": 16590,
+    "groupEnd": 20070,
+    "text": "十度电的价值",
+    "groupId": 8,
+    "position": 2,
+    "totalInGroup": 3,
+    "keyword": "价值",
+    "words": [
+    {
+      "text": "十",
+      "start": 19070,
+      "end": 19270
+    },
+    {
+      "text": "度",
+      "start": 19270,
+      "end": 19430
+    },
+    {
+      "text": "电",
+      "start": 19470,
+      "end": 19590
+    },
+    {
+      "text": "的",
+      "start": 19590,
+      "end": 19790
+    },
+    {
+      "text": "价",
+      "start": 19790,
+      "end": 19910
+    },
+    {
+      "text": "值",
+      "start": 19910,
+      "end": 20070
+    }]
+  },
+  {
+    "start": 20550,
+    "end": 22270,
+    "groupStart": 20550,
+    "groupEnd": 22870,
+    "text": "而图灵AI从不是",
+    "groupId": 9,
+    "position": 0,
+    "totalInGroup": 2,
+    "keyword": "图灵AI",
+    "words": [
+    {
+      "text": "而",
+      "start": 20550,
+      "end": 20830
+    },
+    {
+      "text": "图",
+      "start": 20950,
+      "end": 20990
+    },
+    {
+      "text": "灵",
+      "start": 21150,
+      "end": 21190
+    },
+    {
+      "text": "AI",
+      "start": 21350,
+      "end": 21510
+    },
+    {
+      "text": "从",
+      "start": 21750,
+      "end": 21950
+    },
+    {
+      "text": "不",
+      "start": 21950,
+      "end": 22110
+    },
+    {
+      "text": "是",
+      "start": 22110,
+      "end": 22270
+    }]
+  },
+  {
+    "start": 22270,
+    "end": 22870,
+    "groupStart": 20550,
+    "groupEnd": 22870,
+    "text": "替代人类",
+    "groupId": 9,
+    "position": 1,
+    "totalInGroup": 2,
+    "words": [
+    {
+      "text": "替",
+      "start": 22270,
+      "end": 22430
+    },
+    {
+      "text": "代",
+      "start": 22430,
+      "end": 22550
+    },
+    {
+      "text": "人",
+      "start": 22550,
+      "end": 22750
+    },
+    {
+      "text": "类",
+      "start": 22750,
+      "end": 22870
+    }]
+  },
+  {
+    "start": 23220,
+    "end": 24540,
+    "groupStart": 23220,
+    "groupEnd": 25300,
+    "text": "而是用AI放大",
+    "groupId": 10,
+    "position": 0,
+    "totalInGroup": 2,
+    "keyword": "AI放大",
+    "words": [
+    {
+      "text": "而",
+      "start": 23220,
+      "end": 23380
+    },
+    {
+      "text": "是",
+      "start": 23380,
+      "end": 23540
+    },
+    {
+      "text": "用",
+      "start": 23540,
+      "end": 23700
+    },
+    {
+      "text": "AI",
+      "start": 23780,
+      "end": 23940
+    },
+    {
+      "text": "放",
+      "start": 24140,
+      "end": 24340
+    },
+    {
+      "text": "大",
+      "start": 24340,
+      "end": 24540
+    }]
+  },
+  {
+    "start": 24540,
+    "end": 25300,
+    "groupStart": 23220,
+    "groupEnd": 25300,
+    "text": "你的创造力",
+    "groupId": 10,
+    "position": 1,
+    "totalInGroup": 2,
+    "keyword": "创造力",
+    "words": [
+    {
+      "text": "你",
+      "start": 24540,
+      "end": 24660
+    },
+    {
+      "text": "的",
+      "start": 24660,
+      "end": 24780
+    },
+    {
+      "text": "创",
+      "start": 24780,
+      "end": 24940
+    },
+    {
+      "text": "造",
+      "start": 24940,
+      "end": 25060
+    },
+    {
+      "text": "力",
+      "start": 25060,
+      "end": 25300
+    }]
+  },
+  {
+    "start": 25740,
+    "end": 26860,
+    "groupStart": 25740,
+    "groupEnd": 27860,
+    "text": "以Idea to Money",
+    "groupId": 11,
+    "position": 0,
+    "totalInGroup": 2,
+    "keyword": "Money",
+    "words": [
+    {
+      "text": "以",
+      "start": 25740,
+      "end": 25980
+    },
+    {
+      "text": "Idea",
+      "start": 26060,
+      "end": 26380
+    },
+    {
+      "text": "to",
+      "start": 26460,
+      "end": 26540
+    },
+    {
+      "text": "Money",
+      "start": 26540,
+      "end": 26860
+    }]
+  },
+  {
+    "start": 26980,
+    "end": 27860,
+    "groupStart": 25740,
+    "groupEnd": 27860,
+    "text": "OS为核心",
+    "groupId": 11,
+    "position": 1,
+    "totalInGroup": 2,
+    "keyword": "核心",
+    "words": [
+    {
+      "text": "OS",
+      "start": 26980,
+      "end": 27180
+    },
+    {
+      "text": "为",
+      "start": 27300,
+      "end": 27500
+    },
+    {
+      "text": "核",
+      "start": 27500,
+      "end": 27660
+    },
+    {
+      "text": "心",
+      "start": 27660,
+      "end": 27860
+    }]
+  },
+  {
+    "start": 28220,
+    "end": 29460,
+    "groupStart": 28220,
+    "groupEnd": 29460,
+    "text": "你只需一个想法",
+    "groupId": 12,
+    "position": 0,
+    "totalInGroup": 1,
+    "keyword": "一个想法",
+    "words": [
+    {
+      "text": "你",
+      "start": 28220,
+      "end": 28500
+    },
+    {
+      "text": "只",
+      "start": 28500,
+      "end": 28660
+    },
+    {
+      "text": "需",
+      "start": 28660,
+      "end": 28820
+    },
+    {
+      "text": "一",
+      "start": 28820,
+      "end": 28980
+    },
+    {
+      "text": "个",
+      "start": 28980,
+      "end": 29100
+    },
+    {
+      "text": "想",
+      "start": 29100,
+      "end": 29300
+    },
+    {
+      "text": "法",
+      "start": 29300,
+      "end": 29460
+    }]
+  },
+  {
+    "start": 29860,
+    "end": 30940,
+    "groupStart": 29860,
+    "groupEnd": 32140,
+    "text": "所有繁琐流程",
+    "groupId": 13,
+    "position": 0,
+    "totalInGroup": 2,
+    "keyword": "繁琐流程",
+    "words": [
+    {
+      "text": "所",
+      "start": 29860,
+      "end": 30100
+    },
+    {
+      "text": "有",
+      "start": 30100,
+      "end": 30220
+    },
+    {
+      "text": "繁",
+      "start": 30260,
+      "end": 30420
+    },
+    {
+      "text": "琐",
+      "start": 30460,
+      "end": 30540
+    },
+    {
+      "text": "流",
+      "start": 30620,
+      "end": 30780
+    },
+    {
+      "text": "程",
+      "start": 30780,
+      "end": 30940
+    }]
+  },
+  {
+    "start": 31020,
+    "end": 32140,
+    "groupStart": 29860,
+    "groupEnd": 32140,
+    "text": "全由AI搞定",
+    "groupId": 13,
+    "position": 1,
+    "totalInGroup": 2,
+    "keyword": "AI搞定",
+    "words": [
+    {
+      "text": "全",
+      "start": 31020,
+      "end": 31260
+    },
+    {
+      "text": "由",
+      "start": 31260,
+      "end": 31420
+    },
+    {
+      "text": "AI",
+      "start": 31540,
+      "end": 31660
+    },
+    {
+      "text": "搞",
+      "start": 31780,
+      "end": 31940
+    },
+    {
+      "text": "定",
+      "start": 31940,
+      "end": 32140
+    }]
+  },
+  {
+    "start": 32460,
+    "end": 33540,
+    "groupStart": 32460,
+    "groupEnd": 33540,
+    "text": "直达财富结果",
+    "groupId": 14,
+    "position": 0,
+    "totalInGroup": 1,
+    "keyword": "财富结果",
+    "words": [
+    {
+      "text": "直",
+      "start": 32460,
+      "end": 32660
+    },
+    {
+      "text": "达",
+      "start": 32660,
+      "end": 32900
+    },
+    {
+      "text": "财",
+      "start": 32900,
+      "end": 33060
+    },
+    {
+      "text": "富",
+      "start": 33060,
+      "end": 33180
+    },
+    {
+      "text": "结",
+      "start": 33220,
+      "end": 33380
+    },
+    {
+      "text": "果",
+      "start": 33380,
+      "end": 33540
+    }]
+  },
+  {
+    "start": 34030,
+    "end": 34510,
+    "groupStart": 34030,
+    "groupEnd": 35270,
+    "text": "全链路",
+    "groupId": 15,
+    "position": 0,
+    "totalInGroup": 2,
+    "keyword": "全链路",
+    "words": [
+    {
+      "text": "全",
+      "start": 34030,
+      "end": 34230
+    },
+    {
+      "text": "链",
+      "start": 34310,
+      "end": 34350
+    },
+    {
+      "text": "路",
+      "start": 34470,
+      "end": 34510
+    }]
+  },
+  {
+    "start": 34590,
+    "end": 35270,
+    "groupStart": 34030,
+    "groupEnd": 35270,
+    "text": "商业Agent",
+    "groupId": 15,
+    "position": 1,
+    "totalInGroup": 2,
+    "keyword": "Agent",
+    "words": [
+    {
+      "text": "商",
+      "start": 34590,
+      "end": 34710
+    },
+    {
+      "text": "业",
+      "start": 34710,
+      "end": 34830
+    },
+    {
+      "text": "Agent",
+      "start": 34870,
+      "end": 35030
+    },
+    {
+      "text": "塔",
+      "start": 35230,
+      "end": 35270
+    }]
+  },
+  {
+    "start": 35510,
+    "end": 36790,
+    "groupStart": 35510,
+    "groupEnd": 36790,
+    "text": "搭配三大AI克隆",
+    "groupId": 16,
+    "position": 0,
+    "totalInGroup": 1,
+    "keyword": "AI克隆",
+    "words": [
+    {
+      "text": "搭",
+      "start": 35510,
+      "end": 35670
+    },
+    {
+      "text": "配",
+      "start": 35670,
+      "end": 35830
+    },
+    {
+      "text": "三",
+      "start": 35830,
+      "end": 35990
+    },
+    {
+      "text": "大",
+      "start": 35990,
+      "end": 36150
+    },
+    {
+      "text": "AI",
+      "start": 36230,
+      "end": 36350
+    },
+    {
+      "text": "克",
+      "start": 36470,
+      "end": 36590
+    },
+    {
+      "text": "隆",
+      "start": 36670,
+      "end": 36790
+    }]
+  },
+  {
+    "start": 37190,
+    "end": 39390,
+    "groupStart": 37190,
+    "groupEnd": 39390,
+    "text": "轻松策划推广成交",
+    "groupId": 17,
+    "position": 0,
+    "totalInGroup": 1,
+    "keyword": "推广成交",
+    "words": [
+    {
+      "text": "轻",
+      "start": 37190,
+      "end": 37470
+    },
+    {
+      "text": "松",
+      "start": 37470,
+      "end": 37630
+    },
+    {
+      "text": "策",
+      "start": 37670,
+      "end": 37870
+    },
+    {
+      "text": "划",
+      "start": 37870,
+      "end": 38070
+    },
+    {
+      "text": "推",
+      "start": 38230,
+      "end": 38470
+    },
+    {
+      "text": "广",
+      "start": 38470,
+      "end": 38710
+    },
+    {
+      "text": "成",
+      "start": 38870,
+      "end": 39150
+    },
+    {
+      "text": "交",
+      "start": 39150,
+      "end": 39390
+    }]
+  },
+  {
+    "start": 39830,
+    "end": 40630,
+    "groupStart": 39830,
+    "groupEnd": 42110,
+    "text": "初始发行",
+    "groupId": 18,
+    "position": 0,
+    "totalInGroup": 2,
+    "keyword": "发行",
+    "words": [
+    {
+      "text": "初",
+      "start": 39830,
+      "end": 40110
+    },
+    {
+      "text": "始",
+      "start": 40110,
+      "end": 40270
+    },
+    {
+      "text": "发",
+      "start": 40310,
+      "end": 40510
+    },
+    {
+      "text": "行",
+      "start": 40510,
+      "end": 40630
+    }]
+  },
+  {
+    "start": 40670,
+    "end": 42110,
+    "groupStart": 39830,
+    "groupEnd": 42110,
+    "text": "1万枚专属ID",
+    "groupId": 18,
+    "position": 1,
+    "totalInGroup": 2,
+    "keyword": "专属ID",
+    "words": [
+    {
+      "text": "1",
+      "start": 40670,
+      "end": 40870
+    },
+    {
+      "text": "万",
+      "start": 40870,
+      "end": 41030
+    },
+    {
+      "text": "枚",
+      "start": 41030,
+      "end": 41190
+    },
+    {
+      "text": "专",
+      "start": 41230,
+      "end": 41390
+    },
+    {
+      "text": "属",
+      "start": 41390,
+      "end": 41510
+    },
+    {
+      "text": "ID",
+      "start": 41590,
+      "end": 42110
+    }]
+  },
+  {
+    "start": 42230,
+    "end": 43230,
+    "groupStart": 42230,
+    "groupEnd": 43910,
+    "text": "由100位创始",
+    "groupId": 19,
+    "position": 0,
+    "totalInGroup": 2,
+    "keyword": "创始",
+    "words": [
+    {
+      "text": "由",
+      "start": 42230,
+      "end": 42470
+    },
+    {
+      "text": "100",
+      "start": 42470,
+      "end": 42750
+    },
+    {
+      "text": "位",
+      "start": 42750,
+      "end": 42950
+    },
+    {
+      "text": "创",
+      "start": 42950,
+      "end": 43110
+    },
+    {
+      "text": "始",
+      "start": 43110,
+      "end": 43230
+    }]
+  },
+  {
+    "start": 43270,
+    "end": 43910,
+    "groupStart": 42230,
+    "groupEnd": 43910,
+    "text": "会员推动",
+    "groupId": 19,
+    "position": 1,
+    "totalInGroup": 2,
+    "keyword": "推动",
+    "words": [
+    {
+      "text": "会",
+      "start": 43270,
+      "end": 43430
+    },
+    {
+      "text": "员",
+      "start": 43430,
+      "end": 43590
+    },
+    {
+      "text": "推",
+      "start": 43590,
+      "end": 43750
+    },
+    {
+      "text": "动",
+      "start": 43750,
+      "end": 43910
+    }]
+  },
+  {
+    "start": 44420,
+    "end": 45980,
+    "groupStart": 44420,
+    "groupEnd": 45980,
+    "text": "邀请制加积分激励",
+    "groupId": 20,
+    "position": 0,
+    "totalInGroup": 1,
+    "keyword": "积分激励",
+    "words": [
+    {
+      "text": "邀",
+      "start": 44420,
+      "end": 44620
+    },
+    {
+      "text": "请",
+      "start": 44620,
+      "end": 44780
+    },
+    {
+      "text": "制",
+      "start": 44900,
+      "end": 44940
+    },
+    {
+      "text": "加",
+      "start": 45100,
+      "end": 45340
+    },
+    {
+      "text": "积",
+      "start": 45380,
+      "end": 45540
+    },
+    {
+      "text": "分",
+      "start": 45540,
+      "end": 45660
+    },
+    {
+      "text": "激",
+      "start": 45780,
+      "end": 45860
+    },
+    {
+      "text": "励",
+      "start": 45900,
+      "end": 45980
+    }]
+  },
+  {
+    "start": 46460,
+    "end": 47500,
+    "groupStart": 46460,
+    "groupEnd": 48260,
+    "text": "藏着AI时代",
+    "groupId": 21,
+    "position": 0,
+    "totalInGroup": 2,
+    "keyword": "AI时代",
+    "words": [
+    {
+      "text": "藏",
+      "start": 46460,
+      "end": 46660
+    },
+    {
+      "text": "着",
+      "start": 46740,
+      "end": 46860
+    },
+    {
+      "text": "AI",
+      "start": 46980,
+      "end": 47100
+    },
+    {
+      "text": "时",
+      "start": 47180,
+      "end": 47340
+    },
+    {
+      "text": "代",
+      "start": 47340,
+      "end": 47500
+    }]
+  },
+  {
+    "start": 47500,
+    "end": 48260,
+    "groupStart": 46460,
+    "groupEnd": 48260,
+    "text": "全新红利",
+    "groupId": 21,
+    "position": 1,
+    "totalInGroup": 2,
+    "keyword": "红利",
+    "words": [
+    {
+      "text": "全",
+      "start": 47500,
+      "end": 47700
+    },
+    {
+      "text": "新",
+      "start": 47700,
+      "end": 47900
+    },
+    {
+      "text": "红",
+      "start": 47900,
+      "end": 48100
+    },
+    {
+      "text": "利",
+      "start": 48100,
+      "end": 48260
+    }]
+  },
+  {
+    "start": 48820,
+    "end": 49660,
+    "groupStart": 48820,
+    "groupEnd": 49660,
+    "text": "记住口号",
+    "groupId": 22,
+    "position": 0,
+    "totalInGroup": 1,
+    "keyword": "记住",
+    "words": [
+    {
+      "text": "记",
+      "start": 48820,
+      "end": 49100
+    },
+    {
+      "text": "住",
+      "start": 49100,
+      "end": 49220
+    },
+    {
+      "text": "口",
+      "start": 49260,
+      "end": 49460
+    },
+    {
+      "text": "号",
+      "start": 49460,
+      "end": 49660
+    }]
+  },
+  {
+    "start": 50140,
+    "end": 51220,
+    "groupStart": 50140,
+    "groupEnd": 51980,
+    "text": "人类负责创造",
+    "groupId": 23,
+    "position": 0,
+    "totalInGroup": 2,
+    "keyword": "创造",
+    "words": [
+    {
+      "text": "人",
+      "start": 50140,
+      "end": 50420
+    },
+    {
+      "text": "类",
+      "start": 50420,
+      "end": 50580
+    },
+    {
+      "text": "负",
+      "start": 50580,
+      "end": 50700
+    },
+    {
+      "text": "责",
+      "start": 50700,
+      "end": 50860
+    },
+    {
+      "text": "创",
+      "start": 50860,
+      "end": 51060
+    },
+    {
+      "text": "造",
+      "start": 51060,
+      "end": 51220
+    }]
+  },
+  {
+    "start": 51260,
+    "end": 51980,
+    "groupStart": 50140,
+    "groupEnd": 51980,
+    "text": "真正价值",
+    "groupId": 23,
+    "position": 1,
+    "totalInGroup": 2,
+    "keyword": "价值",
+    "words": [
+    {
+      "text": "真",
+      "start": 51260,
+      "end": 51460
+    },
+    {
+      "text": "正",
+      "start": 51460,
+      "end": 51620
+    },
+    {
+      "text": "价",
+      "start": 51620,
+      "end": 51860
+    },
+    {
+      "text": "值",
+      "start": 51860,
+      "end": 51980
+    }]
+  },
+  {
+    "start": 52180,
+    "end": 53100,
+    "groupStart": 52180,
+    "groupEnd": 54060,
+    "text": "其他的交给你的",
+    "groupId": 24,
+    "position": 0,
+    "totalInGroup": 2,
+    "keyword": "交给",
+    "words": [
+    {
+      "text": "其",
+      "start": 52180,
+      "end": 52380
+    },
+    {
+      "text": "他",
+      "start": 52380,
+      "end": 52460
+    },
+    {
+      "text": "的",
+      "start": 52460,
+      "end": 52620
+    },
+    {
+      "text": "交",
+      "start": 52620,
+      "end": 52740
+    },
+    {
+      "text": "给",
+      "start": 52740,
+      "end": 52860
+    },
+    {
+      "text": "你",
+      "start": 52860,
+      "end": 52980
+    },
+    {
+      "text": "的",
+      "start": 52980,
+      "end": 53100
+    }]
+  },
+  {
+    "start": 53100,
+    "end": 54060,
+    "groupStart": 52180,
+    "groupEnd": 54060,
+    "text": "图灵AI分身",
+    "groupId": 24,
+    "position": 1,
+    "totalInGroup": 2,
+    "keyword": "AI分身",
+    "words": [
+    {
+      "text": "图",
+      "start": 53100,
+      "end": 53220
+    },
+    {
+      "text": "灵",
+      "start": 53340,
+      "end": 53380
+    },
+    {
+      "text": "AI",
+      "start": 53500,
+      "end": 53620
+    },
+    {
+      "text": "分",
+      "start": 53740,
+      "end": 53900
+    },
+    {
+      "text": "身",
+      "start": 53900,
+      "end": 54060
+    }]
+  },
+  {
+    "start": 54910,
+    "end": 56030,
+    "groupStart": 54910,
+    "groupEnd": 56030,
+    "text": "如何拿到专属ID",
+    "groupId": 25,
+    "position": 0,
+    "totalInGroup": 1,
+    "keyword": "专属ID",
+    "words": [
+    {
+      "text": "如",
+      "start": 54910,
+      "end": 55070
+    },
+    {
+      "text": "何",
+      "start": 55070,
+      "end": 55190
+    },
+    {
+      "text": "拿",
+      "start": 55190,
+      "end": 55350
+    },
+    {
+      "text": "到",
+      "start": 55350,
+      "end": 55470
+    },
+    {
+      "text": "专",
+      "start": 55470,
+      "end": 55670
+    },
+    {
+      "text": "属",
+      "start": 55670,
+      "end": 55790
+    },
+    {
+      "text": "ID",
+      "start": 55910,
+      "end": 56030
+    }]
+  },
+  {
+    "start": 56350,
+    "end": 57070,
+    "groupStart": 56350,
+    "groupEnd": 57070,
+    "text": "抢占先机",
+    "groupId": 26,
+    "position": 0,
+    "totalInGroup": 1,
+    "keyword": "抢占先机",
+    "words": [
+    {
+      "text": "抢",
+      "start": 56350,
+      "end": 56550
+    },
+    {
+      "text": "占",
+      "start": 56550,
+      "end": 56750
+    },
+    {
+      "text": "先",
+      "start": 56750,
+      "end": 56950
+    },
+    {
+      "text": "机",
+      "start": 56990,
+      "end": 57070
+    }]
+  },
+  {
+    "start": 57470,
+    "end": 58470,
+    "groupStart": 57470,
+    "groupEnd": 58470,
+    "text": "评论区扣入局",
+    "groupId": 27,
+    "position": 0,
+    "totalInGroup": 1,
+    "keyword": "入局",
+    "words": [
+    {
+      "text": "评",
+      "start": 57470,
+      "end": 57630
+    },
+    {
+      "text": "论",
+      "start": 57630,
+      "end": 57750
+    },
+    {
+      "text": "区",
+      "start": 57750,
+      "end": 57830
+    },
+    {
+      "text": "扣",
+      "start": 57910,
+      "end": 57990
+    },
+    {
+      "text": "入",
+      "start": 58070,
+      "end": 58270
+    },
+    {
+      "text": "局",
+      "start": 58270,
+      "end": 58470
+    }]
+  },
+  {
+    "start": 58550,
+    "end": 59870,
+    "groupStart": 58550,
+    "groupEnd": 59870,
+    "text": "我悄悄告诉你答案",
+    "groupId": 28,
+    "position": 0,
+    "totalInGroup": 1,
+    "keyword": "答案",
+    "words": [
+    {
+      "text": "我",
+      "start": 58550,
+      "end": 58830
+    },
+    {
+      "text": "悄",
+      "start": 58830,
+      "end": 58990
+    },
+    {
+      "text": "悄",
+      "start": 59030,
+      "end": 59150
+    },
+    {
+      "text": "告",
+      "start": 59150,
+      "end": 59310
+    },
+    {
+      "text": "诉",
+      "start": 59310,
+      "end": 59390
+    },
+    {
+      "text": "你",
+      "start": 59390,
+      "end": 59510
+    },
+    {
+      "text": "答",
+      "start": 59510,
+      "end": 59710
+    },
+    {
+      "text": "案",
+      "start": 59710,
+      "end": 59870
+    }]
+  }]
+}

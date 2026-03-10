@@ -1,0 +1,145 @@
+import { VideoTemplate } from '../../types'
+
+/** Tx2 模板 - 播客模式（黑底黄字标题 + 红白大字幕） */
+export const Tx2Template: VideoTemplate = {
+  name: 'tx2',
+  description: '第x2套模板 - 播客风黑底大字（仅字幕+标题+主讲人）',
+
+  mode: 'podcast',
+
+  subtitleStyles: {
+    // 主字幕：暗红手写感，形成主视觉体量
+    default: {
+      fontFamily: '汉仪尚巍手书',
+      fontSize: 148,
+      color: '#8E1D14',
+      textShadow: '0 10px 22px rgba(0, 0, 0, 0.45)',
+      strokeWidth: 8,
+      strokeColor: '#2B0705',
+      paintOrder: 'stroke fill',
+      letterSpacing: 2,
+      doubleLayer: {
+        enabled: true,
+        fontFamily: '汉仪尚巍手书',
+        fontSizeScale: 0.4,
+        color: '#F4F4F4',
+        strokeWidth: 5,
+        strokeColor: '#6A130E',
+        paintOrder: 'stroke fill',
+        textShadow: '0 5px 14px rgba(0, 0, 0, 0.4)',
+        letterSpacing: 1,
+        offsetY: -4,
+      },
+    },
+    // 维持同一视觉：底层红字 + 顶层白字覆盖
+    emphasis: {
+      fontFamily: '汉仪尚巍手书',
+      fontSize: 148,
+      color: '#8E1D14',
+      textShadow: '0 10px 22px rgba(0, 0, 0, 0.45)',
+      strokeWidth: 8,
+      strokeColor: '#2B0705',
+      paintOrder: 'stroke fill',
+      letterSpacing: 2,
+      doubleLayer: {
+        enabled: true,
+        fontFamily: '汉仪尚巍手书',
+        fontSizeScale: 0.5,
+        color: '#F4F4F4',
+        strokeWidth: 5,
+        strokeColor: '#6A130E',
+        paintOrder: 'stroke fill',
+        textShadow: '0 5px 14px rgba(0, 0, 0, 0.4)',
+        letterSpacing: 1,
+        offsetY: -4,
+      },
+    },
+    // 第三句维持同一视觉
+    tertiary: {
+      fontFamily: '汉仪尚巍手书',
+      fontSize: 148,
+      color: '#8E1D14',
+      textShadow: '0 10px 22px rgba(0, 0, 0, 0.45)',
+      strokeWidth: 8,
+      strokeColor: '#2B0705',
+      paintOrder: 'stroke fill',
+      letterSpacing: 2,
+      doubleLayer: {
+        enabled: true,
+        fontFamily: '汉仪尚巍手书',
+        fontSizeScale: 0.5,
+        color: '#F4F4F4',
+        strokeWidth: 5,
+        strokeColor: '#6A130E',
+        paintOrder: 'stroke fill',
+        textShadow: '0 5px 14px rgba(0, 0, 0, 0.4)',
+        letterSpacing: 1,
+        offsetY: -4,
+      },
+    },
+    keyword: {
+
+    },
+  },
+
+  animations: {
+    subtitleIn: 'fadeIn',
+    subtitleOut: 'fadeOut',
+    keywordEffect: 'none',
+  },
+
+  videoEffects: [],
+  videoEffectSequence: [],
+  pipAnimations: [],
+
+  layout: {
+    // podcast 模式无背景视频时，使用纯色底
+    backgroundColor: '#000000',
+    subtitleVerticalCenter: {
+      enabled: true,
+      centerYRatio: 0.5,
+      offsetY: 0,
+    },
+    subtitleBottom: 650,
+    lineHeight: 130,
+    subtitleLayoutPreset: 'singleCenter4',
+    title: {
+      top: 92,
+      left: 70,
+      width: 940,
+      fontSize: 82,
+      fontFamily: '经典黑',
+      fontWeight: 'bold',
+      color: '#F2CF3A',
+      secondLineColor: '#F2CF3A',
+      strokeWidth: 6,
+      strokeColor: '#000000',
+      textShadow: '0 6px 14px rgba(0, 0, 0, 0.38)',
+      lineHeight: 1.22,
+      lineAlign: ['center', 'center'],
+      textAlign: 'center',
+    },
+    speaker: {
+      left: 540,
+      top: 1602,
+      fontFamily: '经典黑',
+      nameFontFamily: '经典黑',
+      titleFontFamily: '经典黑',
+      nameFontWeight: 'bold',
+      titleFontWeight: 'bold',
+      nameSize: 30,
+      nameColor: '#F7F7F7',
+      nameStrokeWidth: 2,
+      nameStrokeColor: '#050505',
+      nameShadow: '0 2px 8px rgba(0, 0, 0, 0.75)',
+      titleSize: 26,
+      titleColor: '#F2CF3A',
+      titleStrokeWidth: 2,
+      titleShadow: '0 2px 8px rgba(0, 0, 0, 0.75)',
+      titleLineHeight: 1.16,
+      textAlign: 'center',
+      titleMarginTop: 8,
+      alwaysVisible: true,
+    },
+  },
+}

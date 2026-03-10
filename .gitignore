@@ -1,0 +1,10 @@
+node_modules
+output
+dist
+assets
+source
+*.ttf
+*.mp3
+*.mp4
+*.wav
+.env

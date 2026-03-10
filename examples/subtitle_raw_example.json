@@ -1,0 +1,70 @@
+{
+  "subtitles": [
+    {
+      "start": 0,
+      "end": 800,
+      "text": "欢迎",
+      "words": [
+        { "text": "欢", "start": 0, "end": 400 },
+        { "text": "迎", "start": 400, "end": 800 }
+      ]
+    },
+    {
+      "start": 800,
+      "end": 1500,
+      "text": "观看",
+      "words": [
+        { "text": "观", "start": 800, "end": 1100 },
+        { "text": "看", "start": 1100, "end": 1500 }
+      ]
+    },
+    {
+      "start": 1500,
+      "end": 2000,
+      "text": "本视频",
+      "words": [
+        { "text": "本", "start": 1500, "end": 1700 },
+        { "text": "视", "start": 1700, "end": 1850 },
+        { "text": "频", "start": 1850, "end": 2000 }
+      ]
+    },
+    {
+      "start": 2000,
+      "end": 2500,
+      "text": "今天",
+      "words": [
+        { "text": "今", "start": 2000, "end": 2200 },
+        { "text": "天", "start": 2200, "end": 2500 }
+      ]
+    },
+    {
+      "start": 2500,
+      "end": 3000,
+      "text": "我们来聊聊",
+      "words": [
+        { "text": "我", "start": 2500, "end": 2650 },
+        { "text": "们", "start": 2650, "end": 2750 },
+        { "text": "来", "start": 2750, "end": 2850 },
+        { "text": "聊", "start": 2850, "end": 2920 },
+        { "text": "聊", "start": 2920, "end": 3000 }
+      ]
+    },
+    {
+      "start": 3000,
+      "end": 3300,
+      "text": "AI",
+      "words": [{ "text": "AI", "start": 3000, "end": 3300 }]
+    },
+    {
+      "start": 3300,
+      "end": 3800,
+      "text": "技术",
+      "words": [
+        { "text": "技", "start": 3300, "end": 3500 },
+        { "text": "术", "start": 3500, "end": 3800 }
+      ]
+    }
+  ],
+  "text": "欢迎观看本视频今天我们来聊聊 AI 技术",
+  "duration": 3.8
+}

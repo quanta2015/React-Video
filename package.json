@@ -1,0 +1,49 @@
+{
+  "name": "video-subtitle-generator",
+  "version": "1.0.0",
+  "description": "视频字幕自动生成工具 - Remotion 版本",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "remotion studio src/remotion/index.ts --port=3001",
+    "build": "tsc",
+    "render": "remotion render src/remotion/index.ts VideoComposition",
+    "render:subtitle-layout-demo": "remotion render src/remotion/index.ts AllSubtitleLayoutsPreview output/subtitle-layout-demo.mp4",
+    "render:all-animations": "remotion render src/remotion/index.ts AllAnimationsPreview output/all-animations-demo.mp4",
+    "render:t1-preview": "remotion render src/remotion/index.ts T1TemplatePreview output/t1-preview.mp4",
+    "render:t1-sequence": "remotion render src/remotion/index.ts T1AnimationSequencePreview output/t1-animation-sequence.mp4",
+    "start": "ts-node src/index.ts",
+    "server": "ts-node src/server.ts",
+    "worker": "ts-node src/worker.ts",
+    "oss:test-upload": "ts-node scripts/test_oss_upload.ts"
+  },
+  "dependencies": {
+    "@remotion/captions": "^4.0.0",
+    "@remotion/cli": "^4.0.0",
+    "axios": "^1.13.4",
+    "bullmq": "^5.69.1",
+    "commander": "^11.1.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "fluent-ffmpeg": "^2.1.2",
+    "ioredis": "^5.9.3",
+    "jieba-wasm": "^2.4.0",
+    "mysql2": "^3.12.0",
+    "openai": "^6.18.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "remotion": "^4.0.0",
+    "remotion-animated": "^1.0.0",
+    "segmentit": "^2.0.3",
+    "uuid": "9.0.1",
+    "zod": "3.22.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/fluent-ffmpeg": "^2.1.24",
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.2.0",
+    "@types/uuid": "^10.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.3.0"
+  }
+}
