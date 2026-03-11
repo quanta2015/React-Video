@@ -1,103 +1,301 @@
-npx ts-node src/index.ts generate \
- --video "https://flowx-img.oss-cn-beijing.aliyuncs.com/b7389c29178df8e3079c2bd4b2cf0ce6.mp4" \
- --no-upload-oss \
- --title "图灵AI身份ID\n每个人的数字财富" \
- --speaker "图灵张教主" \
- --speaker-title "北大畅销书作家\n多家亿级企业增长破局顾问\n图灵AI破局俱乐部发起人" \
- --bgm-url "https://flowx-img.oss-cn-beijing.aliyuncs.com/bgm.mp3" \
- --original-text "朋友们，我提出了 AI 时代伟大愿景，Idea to money OS，想法到钱操作系统。为此我们设计了 AI 时代人人都需要的资产，图灵 AI 身份ID。专属每一位创造者。正如王坚院士所言，算力革命能实现一度电创造十度电的价值。而图灵 AI 从不是替代人类。而是用 AI 放大你的创造力。以 Idea to Money OS 为核心，你只需一个想法，所有繁琐流程全由 AI 搞定，直达财富结果。全链路商业 Agent 塔，搭配三大 AI 克隆，轻松策划、推广、成交。初始发行1万枚专属 ID，由100位创始会员推动。邀请制加积分激励，藏着 AI 时代全新红利。记住口号，人类负责创造真正价值，其他的交给你的图灵 AI 分身。如何拿到专属ID，抢占先机？评论区扣入局，我悄悄告诉你答案。" \
- --template t1 \
- --pip "http://e.hiphotos.baidu.com/image/pic/item/a1ec08fa513d2697e542494057fbb2fb4316d81e.jpg" "http://g.hiphotos.baidu.com/image/pic/item/55e736d12f2eb938d5277fd5d0628535e5dd6f4a.jpg" "https://flowx-img.oss-cn-beijing.aliyuncs.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260210112650_826_938.png" \
- --pip-tags "||||名言,王坚院士" \
- --output ./output/final.mp4
+# AI 智能分句功能 - 直接调用火山引擎大模型 API 范例
+
+## 功能说明
+
+AI 智能分句功能基于火山引擎 AI API（DeepSeek-V3 模型），能够根据语义自动将长文本拆分成适合短视频展示的短句，并支持关键词高亮。
+
+### API 配置
+
+| 配置项       | 值                                         |
+| ------------ | ------------------------------------------ |
+| **Base URL** | `https://ark.cn-beijing.volces.com/api/v3` |
+| **Model**    | `deepseek-v3-2-251201`                     |
+| **认证方式** | Bearer Token (API Key)                     |
+
+### 核心特性
+
+- **标点主导，短句优先**：确保观众一口气读完一个完整意群
+- **视觉字符限制**：每行严格 ≤ 8 个视觉字符（1 汉字=1 字，2 英文/数字/空格=1 字）
+- **屏幕行数限制**：每个 mainId 最多 3 行，越少越好
+- **关键词提取**：自动提取金钱、数字、痛点、动词等刺激转化的词
+- **防闪烁兜底**：每屏最后一行至少 4 个视觉字符，防止画面频闪
+
+---
+
+## cURL 调用范例
+
+### 1. 准备环境变量
 
 ```bash
-curl -X POST http://localhost:3000/api/tasks \
-  -H "Content-Type: application/json" \
-  -d '{
-    "videoUrl": "https://flowx-img.oss-cn-beijing.aliyuncs.com/b7389c29178df8e3079c2bd4b2cf0ce6.mp4",
-    "callbackUrl": "https://example.com/callback",
-    "priority": 10,
-    "options": {
-      "template": "t1",
-      "title": "图灵AI身份ID\n每个人的数字财富",
-      "speaker": "图灵张教主",
-      "speakerTitle": "北大畅销书作家\n多家亿级企业增长破局顾问\n图灵AI破局俱乐部发起人",
-      "bgmUrl": "https://flowx-img.oss-cn-beijing.aliyuncs.com/bgm.mp3",
-      "pip": [
-        "https://flowx-img.oss-cn-beijing.aliyuncs.com/image1.png",
-        { "url": "https://flowx-img.oss-cn-beijing.aliyuncs.com/image2.jpg", "tags": ["图灵AI身份ID", "卡片样式"] },
-        { "url": "https://flowx-img.oss-cn-beijing.aliyuncs.com/image3.png", "tags": ["图灵AI分身", "克隆示意图"] }
-      ],
-      "originalText": "朋友们，我提出了 AI 时代伟大愿景，Idea to money OS，想法到钱操作系统。为此我们设计了 AI 时代人人都需要的资产，图灵 AI 身份ID。专属每一位创造者。正如王坚院士所言，算力革命能实现一度电创造十度电的价值。而图灵 AI 从不是替代人类。而是用 AI 放大你的创造力。以 Idea to Money OS 为核心，你只需一个想法，所有繁琐流程全由 AI 搞定，直达财富结果。全链路商业 Agent 塔，搭配三大 AI 克隆，轻松策划、推广、成交。初始发行1万枚专属 ID，由100位创始会员推动。邀请制加积分激励，藏着 AI 时代全新红利。记住口号，人类负责创造真正价值，其他的交给你的图灵 AI 分身。如何拿到专属ID，抢占先机？评论区扣入局，我悄悄告诉你答案。"
+# 设置火山引擎 API Key
+export VOLCENGINE_AI_API_KEY='your_volcengine_api_key_here'
+```
+
+### 2. 构建 Prompt
+
+AI 分句的核心在于 Prompt 设计。以下是完整的 Prompt 模板：
+
+```
+# Role:
+
+你是 Alex Hormozi 风格的短视频字幕逻辑专家。你的核心能力是平衡"语义完整性"与"视觉冲击力"。
+
+# 【核心使命】
+
+将文本转化为 JSON 格式字幕，遵循"标点主导，短句优先"的原则，确保观众一口气读完一个完整意群，绝不卡顿。
+一个 senseGroups 对应一个意群。
+一个 mainId 对应一个屏幕。
+
+# 待处理文本
+[你的文本内容]
+
+# 【处理逻辑算法】(请严格按此步骤执行)
+
+**第一步：原子切分 (Atomic Slicing)**
+将每个"意群"切分为若干个屏幕和若干个"视觉行" (Line)。
+
+- **字数限制**：每行严格 ≤ 8 个视觉字符。
+- **计算规则**：1 汉字 = 1 字，2 英文/数字/空格 = 1 字。
+
+**第二步：屏幕组装 (Screen Assembly)**
+根据切分出的行数，决定如何分配 mainId。
+
+- **目标**：尽量让一个"意群"在同一个 mainId 中展示完毕，不同意群不能在同一个 mainId 中展示。
+- **上限规则**：每个 mainId 最多 3 行，越少越好。
+- **溢出规则**：若一个意群切分后超过 3 行，必须按语义拆分为多个 mainId，并保证每屏都不超过 3 行。
+
+# 【Hormozi 视觉规范】
+
+1. **防闪烁兜底**：
+   - 虽然"1 行/屏"优先级最高，但如果该行仅有 1-2 个无意义虚词（如"如果"、"那么"），**必须**将其与后文合并，牺牲"1 行"追求"2 行"，防止画面频闪。
+   - **重要规则**：每个意群的最后一行文本必须至少包含 4 个视觉字符，如果少于 4 个字符，必须与前一行合并。
+
+2. **关键词高亮**：
+   - 在 JSON 的 keyword 字段中，提取当前行最能刺激转化的词（金钱、数字、痛点、动词）。
+
+# 【输出格式】
+
+纯 JSON 数组，无需 Markdown 包装：
+
+[
+{"text": "第一行字幕", "mainId": 1, senseGroups: 1, "keyword": "关键词"},
+{"text": "第二行字幕", "mainId": 1, senseGroups: 1, "keyword": ""},
+{"text": "新的意群开始", "mainId": 2, senseGroups: 2, "keyword": "意群"},
+{"text": "意群太长被拆分", "mainId": 3, senseGroups: 3, "keyword": ""},
+{"text": "拆分后的下半部分", "mainId": 3, senseGroups": 3, "keyword": ""}
+]
+```
+
+### 3. 完整 cURL 命令
+
+```bash
+#!/bin/bash
+
+# 设置 API Key
+API_KEY='your_volcengine_api_key_here'
+
+# 待处理的文本（按标点符号拆分成意群）
+TEXT='[{"text": "朋友们，我提出了 AI 时代伟大愿景", "senseGroups": 1}, {"text": "Idea to money OS，想法到钱操作系统", "senseGroups": 2}, {"text": "为此我们设计了 AI 时代人人都需要的资产", "senseGroups": 3}, {"text": "图灵 AI 身份 ID，专属每一位创造者", "senseGroups": 4}]'
+
+# 构建 Prompt
+PROMPT=$(cat <<'EOF'
+# Role:
+
+你是 Alex Hormozi 风格的短视频字幕逻辑专家。你的核心能力是平衡"语义完整性"与"视觉冲击力"。
+
+# 【核心使命】
+
+将文本转化为 JSON 格式字幕，遵循"标点主导，短句优先"的原则，确保观众一口气读完一个完整意群，绝不卡顿。
+一个 senseGroups 对应一个意群。
+一个 mainId 对应一个屏幕。
+
+# 待处理文本
+EOF
+)
+PROMPT="${PROMPT}
+${TEXT}
+
+# 【处理逻辑算法】(请严格按此步骤执行)
+
+**第一步：原子切分 (Atomic Slicing)**
+将每个"意群"切分为若干个屏幕和若干个"视觉行" (Line)。
+
+- **字数限制**：每行严格 ≤ 8 个视觉字符。
+- **计算规则**：1 汉字 = 1 字，2 英文/数字/空格 = 1 字。
+
+**第二步：屏幕组装 (Screen Assembly)**
+根据切分出的行数，决定如何分配 mainId。
+
+- **目标**：尽量让一个"意群"在同一个 mainId 中展示完毕，不同意群不能在同一个 mainId 中展示。
+- **上限规则**：每个 mainId 最多 3 行，越少越好。
+- **溢出规则**：若一个意群切分后超过 3 行，必须按语义拆分为多个 mainId，并保证每屏都不超过 3 行。
+
+# 【Hormozi 视觉规范】
+
+1. **防闪烁兜底**：
+   - 虽然"1 行/屏"优先级最高，但如果该行仅有 1-2 个无意义虚词（如"如果"、"那么"），**必须**将其与后文合并，牺牲"1 行"追求"2 行"，防止画面频闪。
+   - **重要规则**：每个意群的最后一行文本必须至少包含 4 个视觉字符，如果少于 4 个字符，必须与前一行合并。
+
+2. **关键词高亮**：
+   - 在 JSON 的 keyword 字段中，提取当前行最能刺激转化的词（金钱、数字、痛点、动词）。
+
+# 【输出格式】
+
+纯 JSON 数组，无需 Markdown 包装：
+
+[
+{"text": "第一行字幕", "mainId": 1, "senseGroups": 1, "keyword": "关键词"},
+{"text": "第二行字幕", "mainId": 1, "senseGroups": 1, "keyword": ""}
+]
+EOF
+)
+
+# 发送请求
+curl -X POST 'https://ark.cn-beijing.volces.com/api/v3/chat/completions' \
+  -H "Authorization: Bearer ${API_KEY}" \
+  -H 'Content-Type: application/json' \
+  -d "{
+    \"model\": \"deepseek-v3-2-251201\",
+    \"messages\": [
+      {
+        \"role\": \"user\",
+        \"content\": \"${PROMPT//\"/\\\"}\"
+      }
+    ],
+    \"temperature\": 0.1,
+    \"max_output_tokens\": 32768,
+    \"top_p\": 0.95,
+    \"thinking\": {
+      \"type\": \"disabled\"
     }
+  }"
+```
+
+---
+
+## 简化版 cURL 命令（推荐）
+
+```bash
+API_KEY='a396a7c4-9928-4195-8120-ec954099d60e'
+
+curl -X POST 'https://ark.cn-beijing.volces.com/api/v3/chat/completions' \
+  -H "Authorization: Bearer ${API_KEY}" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model": "deepseek-v3-2-251201",
+    "messages": [
+      {
+        "role": "user",
+        "content": "# Role:\n\n你是 Alex Hormozi 风格的短视频字幕逻辑专家。\n\n# 待处理文本\n[{\"text\": \"朋友们，我提出了 AI 时代伟大愿景\", \"senseGroups\": 1}, {\"text\": \"Idea to money OS，想法到钱操作系统\", \"senseGroups\": 2}, {\"text\": \"为此我们设计了 AI 时代人人都需要的资产\", \"senseGroups\": 3}, {\"text\": \"图灵 AI 身份 ID，专属每一位创造者\", \"senseGroups\": 4}]\n\n# 要求\n- 每行严格 ≤ 8 个视觉字符（1 汉字=1 字，2 英文/数字/空格=1 字）\n- 每个 mainId 最多 3 行\n- 每个意群的最后一行至少 4 个视觉字符\n- 提取每行的关键词（金钱、数字、痛点、动词）\n\n# 输出格式\n纯 JSON 数组：[{\"text\": \"...\", \"mainId\": 1, \"senseGroups\": 1, \"keyword\": \"...\"}]"
+      }
+    ],
+    "temperature": 0.1,
+    "max_output_tokens": 32768,
+    "top_p": 0.95
   }'
 ```
 
-1 2 3 4 6 7 8 10 12 14 16 17 18 19 22 24 26 27
+---
 
+## 响应示例
 
-npx ts-node src/index.ts generate \
-  --audio "https://flowx-img.oss-cn-beijing.aliyuncs.com/b7389c29178df8e3079c2bd4b∂2cf0ce6%20%281%29.mp3" \
-  --avatar "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvsIh4X_nyenZ1en0X9pXLE6MpN8R8HmIl5A&s" \
-  --no-upload-oss \
-  --title "图灵AI身份ID\n每个人的数字财富" \
-  --speaker "图灵张教主" \
-  --speaker-title "北大畅销书作家\n多家亿级企业增长破局顾问\n图灵AI破局俱乐部发起人" \
-  --original-text "朋友们，我提出了 AI 时代伟大愿景，Idea to money OS，想法到钱操作系统。为此我们设计了 AI 时代人人都需要的资产，图灵 AI 身份ID。专属每一位创造者。正如王坚院士所言，算力革命能实现一度电创造十度电的价值。而图灵 AI 从不是替代人类。 而是用 AI 放大你的创造力。以 Idea to Money OS 为核心，你只需一个想法，所有繁琐流程全由 AI 搞定，直达财富结果。全链路商业 Agent 塔，搭配三大 AI 克隆，轻松策划、推广、成交。初始发行1万枚专属 ID，由100位创始会员推动。邀请制加积分激励，藏着 AI 时代 全新红利。记住口号，人类负责创造真正价值，其他的交给你的图灵 AI 分身。如何拿到专属ID，抢占先机？评论区扣入局，我悄悄告诉你答案。" \
-  --template tx2 \
-  --output "./output/tx2.mp4"
+```json
+{
+  "id": "chat-2026031112345678",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "[\n  {\"text\": \"朋友们\", \"mainId\": 1, \"senseGroups\": 1, \"keyword\": \"\"},\n  {\"text\": \"我提出了\", \"mainId\": 1, \"senseGroups\": 1, \"keyword\": \"提出\"},\n  {\"text\": \"AI 时代\", \"mainId\": 1, \"senseGroups\": 1, \"keyword\": \"AI 时代\"},\n  {\"text\": \"伟大愿景\", \"mainId\": 1, \"senseGroups\": 1, \"keyword\": \"伟大愿景\"},\n  {\"text\": \"Idea to\", \"mainId\": 2, \"senseGroups\": 2, \"keyword\": \"Idea\"},\n  {\"text\": \"money OS\", \"mainId\": 2, \"senseGroups\": 2, \"keyword\": \"money\"},\n  {\"text\": \"想法到钱\", \"mainId\": 2, \"senseGroups\": 2, \"keyword\": \"钱\"},\n  {\"text\": \"操作系统\", \"mainId\": 2, \"senseGroups\": 2, \"keyword\": \"系统\"},\n  {\"text\": \"为此我们\", \"mainId\": 3, \"senseGroups\": 3, \"keyword\": \"\"},\n  {\"text\": \"设计了\", \"mainId\": 3, \"senseGroups\": 3, \"keyword\": \"设计\"},\n  {\"text\": \"AI 时代\", \"mainId\": 3, \"senseGroups\": 3, \"keyword\": \"AI\"},\n  {\"text\": \"人人都需要\", \"mainId\": 3, \"senseGroups\": 3, \"keyword\": \"需要\"},\n  {\"text\": \"的资产\", \"mainId\": 3, \"senseGroups\": 3, \"keyword\": \"资产\"},\n  {\"text\": \"图灵 AI\", \"mainId\": 4, \"senseGroups\": 4, \"keyword\": \"图灵 AI\"},\n  {\"text\": \"身份 ID\", \"mainId\": 4, \"senseGroups\": 4, \"keyword\": \"身份\"},\n  {\"text\": \"专属\", \"mainId\": 4, \"senseGroups\": 4, \"keyword\": \"专属\"},\n  {\"text\": \"每一位创造者\", \"mainId\": 4, \"senseGroups\": 4, \"keyword\": \"创造者\"}\n]"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 256,
+    "completion_tokens": 512,
+    "total_tokens": 768
+  }
+}
+```
 
+---
 
-API_SECRET='LTAI5tJV7Mwt78YRQRb2XwSo' ./scripts/sign-curl.sh --exec POST http://127.0.0.1:3000/api/tasks '{"videoUrl":"https://flowx-img.oss-cn-beijing.aliyuncs.com/b7389c29178df8e3079c2bd4b2cf0ce6.mp4","options":{"template":"t1","title":"图灵AI身份ID\n每个人的数字财富","speaker":"图灵张教主","speakerTitle":"北大畅销书作家\n多家亿级企业增长破局顾问\n图灵AI破局俱乐部发起人","originalText":"朋友们，我提出了 AI 时代伟大愿景，Idea to money OS，想法到钱操作系统。为此我们设计了 AI 时代人人都需要的资产，图灵 AI 身份ID。专属每一位创造者。正如王坚院士所言，算力革命能实现一度电创造十度电的价值。而图灵 AI 从不是替代人类。 而是用 AI 放大你的创造力。以 Idea to Money OS 为核心，你只需一个想法，所有繁琐流程全由 AI 搞定，直达财富结果。全链路商业 Agent 塔，搭配三大 AI 克隆，轻松策划、推广、成交。初始发行1万枚专属 ID，由100位创始会员推动。邀请制加积分激励，藏着 AI 时代 全新红利。记住口号，人类负责创造真正价值，其他的交给你的图灵 AI 分身。如何拿到专属ID，抢占先机？评论区扣入局，我悄悄告诉你答案。","pip":["http://e.hiphotos.baidu.com/image/pic/item/a1ec08fa513d2697e542494057fbb2fb4316d81e.jpg","http://g.hiphotos.baidu.com/image/pic/item/55e736d12f2eb938d5277fd5d0628535e5dd6f4a.jpg","https://flowx-img.oss-cn-beijing.aliyuncs.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260210112650_826_938.png"]}}'
+## 提取 JSON 结果
 
+```bash
+# 使用 jq 提取 JSON 结果
+curl -s -X POST 'https://ark.cn-beijing.volces.com/api/v3/chat/completions' \
+  -H "Authorization: Bearer ${API_KEY}" \
+  -H 'Content-Type: application/json' \
+  -d '{...}' | jq -r '.choices[0].message.content'
+```
 
+---
 
-API_SECRET='LTAI5tJV7Mwt78YRQRb2XwSo' ./scripts/sign-curl.sh --exec POST http://156.254.6.45:3000/api/tasks '{"videoUrl":"https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/video/20260206/202602061149141974c2015.MP4","options":{"pip": [], "title": "只要迈出第一步\n你就成功了一半", "bgmUrl": "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/file/20260301/20260301190452a20de9134.MP3", "speaker": "图灵张教主", "template": "t8", "avatarUrl": "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/images/20260206/20260206114916032335365.jpg", "originalText": "创业一次，你就已经悄悄跟普通人拉开差距了——不是因为赚了多少钱，而是你正在做一件“普通人几年甚至一辈子都难碰一次”的事：短时间逼自己突破所有边界。\n\n一旦选了创业，你就再也不是“只做一件事的小角色”了：得懂运营、会销售、能管理、善沟通，还得摸透技术逻辑、拿捏人性分寸、扛住人情世故。说白了，创业就是给你开了“强制进化外挂”——先把你所有短板全暴露出来，再逼着你亲手一点点补全。\n\n这个过程疼吗？太疼了：吃不下饭、睡不着觉，身心像被反复拉扯；但熬过去呢？你会在一次次崩溃里，炼出一颗“刀枪不入”的内心。从你扛过那些风雨、见识过刀锋的那一刻起，人生就没什么能吓倒你了。\n\n所以我常说：创业从来不是“赚快钱的机会”，它是一份“不可复制的高价值学历”——成功了，你拿时间自由、财富自由、思维自由；就算失败了，也别沮丧——就当交了学费，换一身“扛事的底气”和“解决问题的能力”。\n\n带着这些东西再回职场、再做生意，你到哪都是“香饽饽”——社会永远高薪抢着要“真正做过决策、扛过责任、干过实战”的人。所以怕什么失败？最该怕的是：你连第一步都没踏出去。只要你敢开始，就已经赢过了99%的普通人。\n\n我是张教主，关注我，2026我们一起用AI破局，一个人顶100人生产力，后续内容中我将持续揭秘新计划！", "speakerTitle": "图灵Ai创始人\n北大畅销书作家\n上市公司增长顾问"}}'
+## 参数说明
 
-npx ts-node src/index.ts generate \
-  --video "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/video/20260130/202601301605598d5480723.mp4" \
-  --no-upload-oss \
-  --title "人活一世要心怀感恩，懂得感恩，不要把别人的付出，全当做理所当然，懂得感恩是为自己留路，常行善事就是给自己积福#做人不忘恩 #做人 #感恩 #清茶朗读 #抖音小助手" \
-  --speaker "范伟" \
-  --speaker-title "索能环境 创始人\n大学客座教授\n含山县政府招商顾问\n图灵Ai破局俱乐部联合发起人" \
-  --original-text "金句1：别人的付出从来不是理所当然，能被善待是藏在日常里的福分。\n佐证：同事主动帮你分担紧急任务，不是他的职责；朋友深夜陪你解闷，不是他的义务——这些细碎的善意，都是旁人愿意为你多走一步的温暖，该当珍惜。\n\n金句2：滴水之恩需铭记于心，常行善事是给自己积下的福报。\n佐证：韩信早年受漂母一饭之恩，后来封王仍以千金报恩，善念的种子终会开花；生活中有人帮陌生人扶起倒地的自行车，不久后自己忘带钥匙时，也会有邻居主动递来备用钥匙——善意从来不是单向的，藏着彼此的呼应。" \
-  --template t1 \
-  --pip "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/material/image/20260301/202603012301564f1d27508.jpg" \
-  --output "./output/t1-test.mp4"
+### 请求参数
 
+| 参数                 | 类型   | 必填 | 说明                                  |
+| -------------------- | ------ | ---- | ------------------------------------- |
+| `model`              | string | 是   | 模型名称，使用 `deepseek-v3-2-251201` |
+| `messages`           | array  | 是   | 对话消息列表                          |
+| `messages[].role`    | string | 是   | 角色，使用 `user`                     |
+| `messages[].content` | string | 是   | Prompt 内容                           |
+| `temperature`        | number | 否   | 温度，建议 0.1（低温度保证稳定输出）  |
+| `max_output_tokens`  | number | 否   | 最大输出 token 数，建议 32768         |
+| `top_p`              | number | 否   | 核采样参数，建议 0.95                 |
+| `thinking.type`      | string | 否   | 思考模式，使用 `disabled`             |
 
-{"outputUrl": "https://flowx-img.oss-cn-beijing.aliyuncs.com/video-results/2026/03/02/89d1c032-33dc-4429-9aaf-5a432e3430be.mp4"}
+### 输出字段说明
 
+| 字段          | 说明                                    |
+| ------------- | --------------------------------------- |
+| `text`        | 分句后的文本内容                        |
+| `mainId`      | 屏幕 ID，相同 mainId 的内容在同一屏显示 |
+| `senseGroups` | 意群 ID，标识语义完整的意群             |
+| `keyword`     | 关键词，用于高亮显示                    |
 
-API_SECRET='LTAI5tJV7Mwt78YRQRb2XwSo' ./scripts/sign-curl.sh --exec POST http://156.254.6.45:3000/api/tasks '{"videoUrl":"https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/video/20260206/202602061149141974c2015.MP4","options":{"pip": ["https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/material/video/20260303/20260303152948c3ad53452.mp4"], "title": "只要迈出第一步\n你就成功了一半", "bgmUrl": "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/file/20260301/20260301190452a20de9134.MP3", "speaker": "图灵张教主", "template": "t8", "avatarUrl": "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/images/20260206/20260206114916032335365.jpg", "originalText": "创业一次，你就已经悄悄跟普通人拉开差距了——不是因为赚了多少钱，而是你正在做一件“普通人几年甚至一辈子都难碰一次”的事：短时间逼自己突破所有边界。\n\n一旦选了创业，你就再也不是“只做一件事的小角色”了：得懂运营、会销售、能管理、善沟通 ，还得摸透技术逻辑、拿捏人性分寸、扛住人情世故。说白了，创业就是给你开了“强制进化外挂”——先把你所有短板全暴露出来，再逼着你亲手一点点补全。\n\n这个过程疼吗？太疼了：吃不下饭、睡不着觉，身心像被反复拉扯；但熬过去呢？你会在一次次崩溃里，炼出一颗“刀枪不入”的内心。从你扛过那些风雨、见识过刀锋的那一刻起，人生就没什么能吓倒你了。\n\n所以我常说：创业从来不是“赚快钱的机会”，它是一份“不可复制的高价值学历”——成功了，你拿时间自由、财富自由、思维自由；就算失败了，也别沮丧——就当交了学费，换一身“ 扛事的底气”和“解决问题的能力”。\n\n带着这些东西再回职场、再做生意，你到哪都是“香饽饽”——社会永远高薪抢着要“真正做过决策、扛过责任、干过实战”的人。所以怕什么失败？最该怕的是：你连第一步都没踏出去。只要你敢开始，就已经赢过了99%的普通人。\n\n我是 张教主，关注我，2026我们一起用AI破局，一个人顶100人生产力，后续内容中我将持续揭秘新计划！", "speakerTitle": "图灵Ai创始人\n北大畅销书作家\n上市公司增长顾问"}}'
+---
 
-npx ts-node src/index.ts generate \
-  --video "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/video/20260206/202602061149141974c2015.MP4" \
-  --no-upload-oss \
-  --template "t8" \
-  --title $'只要迈出第一步\n你就成功了一半' \
-  --speaker "图灵张教主" \
-  --speaker-title $'图灵Ai创始人\n北大畅销书作家\n上市公司增长顾问' \
-  --avatar "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/images/20260206/20260206114916032335365.jpg" \
-  --bgm-url "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/file/20260301/20260301190452a20de9134.MP3" \
-  --original-text $'创业一次，你就已经悄悄跟普通人拉开差距了——不是因为赚了多少钱，而是你正在做一件“普通人几年甚至一辈子都难碰一次”的事：短时间逼自己突破所有边界。\n\n一旦选了创业，你就再也不是“只做一件事的小角色”了：得懂运营、会销售、能管理、善沟通 ，还得摸透技术逻辑、拿捏人性分寸、扛住人情世故。说白了，创业就是给你开了“强制进化外挂”——先把你所有短板全暴露出来，再逼着你亲手一点点补全。\n\n这个过程疼吗？太疼了：吃不下饭、睡不着觉，身心像被反复拉扯；但熬过去呢？你会在一次次崩溃里，炼出一颗“刀枪不入”的内心。从你扛过那些风雨、见识过刀锋的那一刻起，人生就没什么能吓倒你了。\n\n所以我常说：创业从来不是“赚快钱的机会”，它是一份“不可复制的高价值学历”——成功了，你拿时间自由、财富自由、思维自由；就算失败了，也别沮丧——就当交了学费，换一身“ 扛事的底气”和“解决问题的能力”。\n\n带着这些东西再回职场、再做生意，你到哪都是“香饽饽”——社会永远高薪抢着要“真正做过决策、扛过责任、干过实战”的人。所以怕什么失败？最该怕的是：你连第一步都没踏出去。只要你敢开始，就已经赢过了99%的普通人。\n\n我是 张教主，关注我，2026我们一起用AI破局，一个人顶100人生产力，后续内容中我将持续揭秘新计划！' \
-  --pip \
-  "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/material/video/20260303/20260303152948c3ad53452.mp4" \
-  "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/material/video/20260303/20260303152857e676d9869.mp4" \
-  "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/material/video/20260303/202603031528257c3054569.mp4" \
-  "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/material/video/20260303/202603031528009be2c7342.mp4" \
-  "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/material/video/20260303/202603031527282a09f1816.mp4" \
-  "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/material/video/20260303/2026030315270351f532961.mp4" \
-  "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/material/video/20260303/20260303152623678fa7390.mp4" \
-  "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/material/video/20260303/20260303152605f06981784.mp4" \
-  "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/material/video/20260303/20260303152542a8e0e5011.mp4" \
-  "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/material/video/20260303/20260303152446450d17198.mp4" \
-  "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/material/video/20260303/2026030315242307b7f6270.mp4" \
-  "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/material/video/20260303/20260303152356f90ac8683.mp4" \
-  "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/material/video/20260303/20260303152327c2ab74345.mp4" \
-  "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/material/video/20260303/20260303152308179170744.mp4" \
-  "https://tulingai-1318672529.cos.ap-shanghai.myqcloud.com/uploads/material/video/20260303/202603031522163e4713459.mp4"
+## 注意事项
 
+1. **API Key 安全**：不要将 API Key 硬编码在代码中，建议使用环境变量
+2. **视觉字符计算**：1 汉字 = 1 字，2 英文/数字/空格 = 1 字
+3. **温度设置**：使用 0.1 低温度保证输出稳定性
+4. **JSON 解析**：AI 返回的内容可能包含 Markdown 代码块，需要提取纯 JSON
+5. **错误处理**：建议添加重试机制处理网络错误
 
-  
+---
+
+## 完整脚本示例
+
+````bash
+#!/bin/bash
+
+# 火山引擎 AI 分句脚本
+
+API_KEY="${VOLCENGINE_AI_API_KEY:-your_api_key}"
+INPUT_TEXT='[{"text": "朋友们，我提出了 AI 时代伟大愿景", "senseGroups": 1}, {"text": "Idea to money OS，想法到钱操作系统", "senseGroups": 2}]'
+
+RESPONSE=$(curl -s -X POST 'https://ark.cn-beijing.volces.com/api/v3/chat/completions' \
+  -H "Authorization: Bearer ${API_KEY}" \
+  -H 'Content-Type: application/json' \
+  -d "{
+    \"model\": \"deepseek-v3-2-251201\",
+    \"messages\": [{
+      \"role\": \"user\",
+      \"content\": \"# Role: 字幕分句专家\\n\\n# 待处理文本\\n${INPUT_TEXT}\\n\\n# 要求\\n- 每行≤8 个视觉字符\\n- 每屏最多 3 行\\n- 每屏最后一行至少 4 个字符\\n- 提取关键词\\n\\n# 输出\\n纯 JSON 数组\"
+    }],
+    \"temperature\": 0.1,
+    \"max_output_tokens\": 32768
+  }")
+
+# 提取并解析 JSON 结果
+RESULT=$(echo "$RESPONSE" | jq -r '.choices[0].message.content' | sed 's/```json//g' | sed 's/```//g')
+
+echo "AI 分句结果:"
+echo "$RESULT" | jq .
+````
