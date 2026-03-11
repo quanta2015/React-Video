@@ -56,10 +56,29 @@ if [ "$confirm" != "y" ] && [ "$confirm" != "Y" ]; then
 fi
 
 # 备份现有数据（如果存在）
+backup_dir="/var/lib/mysql.backup.$(date +%Y%m%d%H%M%S)"
 if [ -d /var/lib/mysql ]; then
-    log_info "备份现有 MySQL 数据到 /var/lib/mysql.backup.$(date +%Y%m%d%H%M%S)..."
-    mv /var/lib/mysql /var/lib/mysql.backup.$(date +%Y%m%d%H%M%S) || true
+    log_info "备份现有 MySQL 数据到 $backup_dir..."
+    mv /var/lib/mysql "$backup_dir" || {
+        log_error "数据备份失败"
+        exit 1
+    }
 fi
+
+# 关键修复：创建 mysql 目录并设置正确的权限
+log_info "创建 MySQL 数据目录并设置权限..."
+mkdir -p /var/lib/mysql || {
+    log_error "无法创建 MySQL 数据目录"
+    exit 1
+}
+chown -R mysql:mysql /var/lib/mysql || {
+    log_error "无法设置 MySQL 数据目录权限"
+    exit 1
+}
+chmod 700 /var/lib/mysql || {
+    log_error "无法设置 MySQL 数据目录访问权限"
+    exit 1
+}
 
 # 重新初始化 MySQL
 log_info "重新初始化 MySQL..."
@@ -70,22 +89,26 @@ mysqld --initialize-insecure --user=mysql || {
 
 # 启动 MySQL
 log_info "启动 MySQL 服务..."
-systemctl start mysql
+systemctl start mysql || {
+    log_error "MySQL 服务启动失败"
+    exit 1
+}
 
-# 等待 MySQL 启动
-sleep 3
+# 等待 MySQL 完全启动
+log_info "等待 MySQL 服务初始化..."
+sleep 5
 
-# 验证 MySQL 运行
+# 验证 MySQL 运行状态
 if systemctl is-active --quiet mysql; then
     log_success "MySQL 服务已启动"
 else
-    log_error "MySQL 服务启动失败"
+    log_error "MySQL 服务启动失败，请检查日志: journalctl -u mysql"
     exit 1
 fi
 
 # 配置 MySQL（空密码）
-log_info "配置 MySQL..."
-mysql -u root <<EOF
+log_info "配置 MySQL 数据库和用户..."
+mysql -u root -h 127.0.0.1 <<EOF
 -- 创建数据库
 CREATE DATABASE IF NOT EXISTS video_generator 
   DEFAULT CHARACTER SET utf8mb4 
@@ -102,7 +125,7 @@ log_info "清理部署标记文件..."
 rm -f /opt/video-demo/.mysql_credentials
 rm -f /opt/video-demo/.db_initialized
 
-log_success "MySQL 已重置，可以重新运行部署脚本"
+log_success "MySQL 已重置完成！"
 echo ""
-echo "运行部署脚本：sudo ./deploy-ubuntu24.sh"
+log_info "现在可以重新运行部署脚本：sudo ./deploy-ubuntu24.sh"
 echo ""

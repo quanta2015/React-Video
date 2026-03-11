@@ -45,7 +45,6 @@ echo ""
 
 # 创建目录
 log_info "创建项目目录..."
-mkdir -p /opt/video-demo/nodejs
 mkdir -p /opt/video-demo/output
 mkdir -p /opt/video-demo/public
 mkdir -p /var/log/video-demo
@@ -60,11 +59,21 @@ if [ -z "$repo_url" ]; then
 fi
 
 # 检查并克隆/更新代码
+# 情况 1: nodejs 子目录是 git 仓库
 if [ -d "nodejs/.git" ]; then
-    log_info "检测到现有 Git 仓库，更新代码..."
+    log_info "检测到现有 Git 仓库 (nodejs/)，更新代码..."
     cd nodejs && git pull || log_warn "git pull 失败，继续执行"
+    PROJECT_DIR="nodejs"
+# 情况 2: 当前目录是 git 仓库且包含 package.json（项目根目录直接部署）
+elif [ -d ".git" ] && [ -f "package.json" ]; then
+    log_info "检测到当前目录是 Git 仓库，更新代码..."
+    git pull || log_warn "git pull 失败，继续执行"
+    PROJECT_DIR="."
+# 情况 3: nodejs 目录已存在且不为空
 elif [ -d "nodejs" ] && [ "$(ls -A nodejs)" ]; then
     log_warn "nodejs 目录已存在且不为空，跳过克隆"
+    PROJECT_DIR="nodejs"
+# 情况 4: 克隆到新目录
 else
     log_info "克隆代码..."
     if [ -d "nodejs" ]; then
@@ -74,15 +83,12 @@ else
         log_error "克隆失败，请检查仓库地址"
         exit 1
     }
+    PROJECT_DIR="nodejs"
 fi
 
-# 检查 nodejs 目录
-if [ ! -d "nodejs" ]; then
-    log_error "nodejs 目录不存在"
-    exit 1
-fi
+log_info "项目目录：${PROJECT_DIR}"
 
-cd /opt/video-demo/nodejs
+cd /opt/video-demo/${PROJECT_DIR}
 
 # 安装依赖
 log_info "安装 npm 依赖..."
@@ -225,7 +231,11 @@ log_success "代码部署完成！"
 echo "==============================================================================="
 echo ""
 echo "下一步操作："
-echo "1. 编辑 /opt/video-demo/nodejs/.env 文件，填入正确的 API 密钥"
+if [ "${PROJECT_DIR}" = "nodejs" ]; then
+    echo "1. 编辑 /opt/video-demo/nodejs/.env 文件，填入正确的 API 密钥"
+else
+    echo "1. 编辑 /opt/video-demo/.env 文件，填入正确的 API 密钥"
+fi
 echo "2. 测试 API: curl http://localhost:3000/health"
 echo "3. 查看日志：pm2 logs"
 echo ""
