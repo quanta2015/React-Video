@@ -3,6 +3,5 @@ output
 dist
 source
 *.ttf
-*.mp3
 *.wav
 .env
