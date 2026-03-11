@@ -1,7 +1,6 @@
 node_modules
 output
 dist
-assets
 source
 *.ttf
 *.mp3
