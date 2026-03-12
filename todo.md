@@ -18,7 +18,6 @@ npx ts-node src/index.ts generate \
   --speaker "图灵张教主" \
   --speaker-title "北大畅销书作家\n多家亿级企业增长破局顾问\n图灵 AI 破局俱乐部发起人" \
   --template t1 \
-  --split-subtitle "./examples/subtitle_split.json" \
    --pip "http://e.hiphotos.baidu.com/image/pic/item/a1ec08fa513d2697e542494057fbb2fb4316d81e.jpg" "http://g.hiphotos.baidu.com/image/pic/item/55e736d12f2eb938d5277fd5d0628535e5dd6f4a.jpg" "https://flowx-img.oss-cn-beijing.aliyuncs.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260210112650_826_938.png" \
   --pip-tags "||||名言,王坚院士" \
   --output "./output/t1-static.mp4"

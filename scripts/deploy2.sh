@@ -1,13 +1,17 @@
-
 #!/bin/bash
 #===============================================================================
-# 视频生成项目一键部署脚本（修正版）
+# 视频生成项目一键部署脚本（应用用户版）
 # 适用系统：Ubuntu 24.04 LTS
-# 重点修复：
-# 1. 数据库统一使用 root + 安装时密码/Socket
-# 2. 自动建库建表（执行 schema.sql）
-# 3. Nginx 反向代理与根路径配置修正
-# 4. 默认关闭 AI 分句，避免火山引擎 AI 调用卡死；增加关键自检
+# 修复点：
+# 1. 不再要求输入 MySQL root 密码，优先通过 socket 自动管理 MySQL
+# 2. 自动创建业务数据库和应用用户 video_app
+# 3. 应用统一使用 video_app / 12345678 通过 TCP 连接 127.0.0.1
+# 4. 部署时执行 schema.sql 自动建库建表
+# 5. 启动时只检查数据库连接，不重复导入 schema.sql
+# 6. server.ts 改为先启动 HTTP /health，再初始化 JobDispatcher
+# 7. 默认关闭 AI 分句，避免火山引擎 AI 调用卡死
+# 8. 健康检查改为轮询并输出关键日志
+# 9. 修复 heredoc 结束符导致 TS 文件写坏的问题
 #===============================================================================
 
 set -Eeuo pipefail
@@ -21,9 +25,14 @@ NC='\033[0m'
 APP_ROOT="/opt/video-demo"
 APP_DIR="$APP_ROOT/nodejs"
 LOG_DIR="/var/log/video-demo"
-MYSQL_CONF_FILE="$APP_ROOT/.mysql_root.cnf"
+
+MYSQL_ROOT_SOCKET_CONF="$APP_ROOT/.mysql_root_socket.cnf"
+MYSQL_APP_CONF_FILE="$APP_ROOT/.mysql_app.cnf"
 MYSQL_RUNTIME_FILE="$APP_ROOT/.mysql_runtime"
+
 DB_NAME="video_generator"
+DB_APP_USER="video_app"
+DB_APP_PASSWORD="12345678"
 APP_PORT="3000"
 
 log_info() { echo -e "${BLUE}[INFO]${NC} $1"; }
@@ -45,9 +54,10 @@ check_system() {
     log_error "无法识别系统版本"
     exit 1
   fi
+  # shellcheck disable=SC1091
   . /etc/os-release
-  if [ "$ID" != "ubuntu" ]; then
-    log_warn "此脚本为 Ubuntu 设计，当前系统：$PRETTY_NAME"
+  if [ "${ID:-}" != "ubuntu" ]; then
+    log_warn "此脚本为 Ubuntu 设计，当前系统：${PRETTY_NAME:-unknown}"
   fi
 }
 
@@ -61,7 +71,8 @@ install_system_packages() {
   apt-get update
   DEBIAN_FRONTEND=noninteractive apt-get install -y \
     curl git wget unzip ffmpeg redis-server mysql-server nginx ufw \
-    supervisor build-essential ca-certificates gnupg lsb-release
+    supervisor build-essential ca-certificates gnupg lsb-release \
+    python3 openssl lsof
 }
 
 install_nodejs() {
@@ -70,120 +81,126 @@ install_nodejs() {
     curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
     apt-get install -y nodejs
   fi
+
   npm install -g pm2
   log_success "Node.js: $(node -v), npm: $(npm -v)"
 }
 
 setup_redis() {
+  log_info "启动 Redis..."
   systemctl enable redis-server
   systemctl restart redis-server
   redis-cli ping | grep -q PONG
   log_success "Redis 已启动"
 }
 
-prompt_mysql_runtime() {
-  if [ -f "$MYSQL_RUNTIME_FILE" ]; then
-    # shellcheck disable=SC1090
-    . "$MYSQL_RUNTIME_FILE"
-    return 0
-  fi
+ensure_mysql_root_socket_access() {
+  log_info "检查 MySQL root 的本机 socket 管理权限..."
 
-  log_info "检测 MySQL root 认证方式..."
-  local auth_plugin
-  auth_plugin=$(mysql -N -B -uroot -e "SELECT plugin FROM mysql.user WHERE user='root' AND host='localhost' LIMIT 1;" 2>/dev/null || true)
+  systemctl enable mysql
+  systemctl restart mysql
 
   if mysql -uroot -e "SELECT 1" >/dev/null 2>&1; then
-    cat > "$MYSQL_RUNTIME_FILE" <<EOF2
-MYSQL_LOGIN_MODE=socket
-MYSQL_ROOT_USER=root
-MYSQL_ROOT_PASSWORD=
-EOF2
-    chmod 600 "$MYSQL_RUNTIME_FILE"
-    log_success "MySQL root 当前可通过本机 socket 直连"
+    cat > "$MYSQL_ROOT_SOCKET_CONF" <<EOF
+[client]
+user=root
+EOF
+    chmod 600 "$MYSQL_ROOT_SOCKET_CONF"
+    log_success "检测到 root 可通过本机 socket 登录"
     return 0
   fi
 
-  local root_pw=""
-  echo ""
-  echo "请输入当前 MySQL root 密码（安装时设置的密码）"
-  read -r -s -p "MySQL root 密码: " root_pw
-  echo ""
-
-  if mysql -uroot -p"$root_pw" -e "SELECT 1" >/dev/null 2>&1; then
-    cat > "$MYSQL_RUNTIME_FILE" <<EOF2
-MYSQL_LOGIN_MODE=password
-MYSQL_ROOT_USER=root
-MYSQL_ROOT_PASSWORD=$root_pw
-EOF2
-    chmod 600 "$MYSQL_RUNTIME_FILE"
-    log_success "MySQL root 密码验证通过"
+  if sudo mysql -uroot -e "SELECT 1" >/dev/null 2>&1; then
+    cat > "$MYSQL_ROOT_SOCKET_CONF" <<EOF
+[client]
+user=root
+EOF
+    chmod 600 "$MYSQL_ROOT_SOCKET_CONF"
+    log_success "检测到可通过 sudo mysql 使用 root 的 socket 登录"
     return 0
   fi
 
-  log_error "无法使用当前 root 凭证连接 MySQL"
+  log_error "无法通过本机 socket 访问 MySQL root，无法自动创建应用用户"
   exit 1
 }
 
-mysql_exec() {
+mysql_root_exec() {
+  local sql="$1"
+  mysql --defaults-extra-file="$MYSQL_ROOT_SOCKET_CONF" -e "$sql"
+}
+
+mysql_app_exec() {
   # shellcheck disable=SC1090
   . "$MYSQL_RUNTIME_FILE"
   local sql="$1"
-  if [ "$MYSQL_LOGIN_MODE" = "socket" ]; then
-    mysql -uroot -e "$sql"
-  else
-    mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "$sql"
-  fi
+
+  mysql -h127.0.0.1 -P3306 -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -D"$MYSQL_DATABASE" -e "$sql"
 }
 
 mysql_import_file() {
   # shellcheck disable=SC1090
   . "$MYSQL_RUNTIME_FILE"
   local file="$1"
-  if [ "$MYSQL_LOGIN_MODE" = "socket" ]; then
-    mysql -uroot < "$file"
-  else
-    mysql -uroot -p"$MYSQL_ROOT_PASSWORD" < "$file"
-  fi
+
+  mysql -h127.0.0.1 -P3306 -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" < "$file"
 }
 
 write_mysql_client_conf() {
-  # shellcheck disable=SC1090
-  . "$MYSQL_RUNTIME_FILE"
-  if [ "$MYSQL_LOGIN_MODE" = "socket" ]; then
-    cat > "$MYSQL_CONF_FILE" <<EOF2
+  cat > "$MYSQL_APP_CONF_FILE" <<EOF
 [client]
-user=root
-EOF2
-  else
-    cat > "$MYSQL_CONF_FILE" <<EOF2
-[client]
-user=root
-password=$MYSQL_ROOT_PASSWORD
-EOF2
-  fi
-  chmod 600 "$MYSQL_CONF_FILE"
+host=127.0.0.1
+port=3306
+user=${DB_APP_USER}
+password=${DB_APP_PASSWORD}
+protocol=tcp
+database=${DB_NAME}
+EOF
+
+  chmod 600 "$MYSQL_APP_CONF_FILE"
 }
 
 setup_mysql() {
-  log_info "配置 MySQL..."
-  systemctl enable mysql
-  systemctl restart mysql
+  log_info "配置 MySQL 数据库和应用用户..."
 
-  prompt_mysql_runtime
-  write_mysql_client_conf
+  ensure_mysql_root_socket_access
 
-  mysql_exec "CREATE DATABASE IF NOT EXISTS ${DB_NAME} DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci;"
+  mysql_root_exec "CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci;"
+  mysql_root_exec "CREATE USER IF NOT EXISTS '${DB_APP_USER}'@'127.0.0.1' IDENTIFIED BY '${DB_APP_PASSWORD}';"
+  mysql_root_exec "CREATE USER IF NOT EXISTS '${DB_APP_USER}'@'localhost' IDENTIFIED BY '${DB_APP_PASSWORD}';"
+  mysql_root_exec "ALTER USER '${DB_APP_USER}'@'127.0.0.1' IDENTIFIED BY '${DB_APP_PASSWORD}';"
+  mysql_root_exec "ALTER USER '${DB_APP_USER}'@'localhost' IDENTIFIED BY '${DB_APP_PASSWORD}';"
+  mysql_root_exec "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_APP_USER}'@'127.0.0.1';"
+  mysql_root_exec "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_APP_USER}'@'localhost';"
+  mysql_root_exec "FLUSH PRIVILEGES;"
 
-  cat > "$APP_ROOT/.db_credentials" <<EOF2
+  cat > "$MYSQL_RUNTIME_FILE" <<EOF
+MYSQL_LOGIN_MODE=password
 MYSQL_HOST=127.0.0.1
 MYSQL_PORT=3306
-MYSQL_USER=root
+MYSQL_USER=${DB_APP_USER}
+MYSQL_PASSWORD=${DB_APP_PASSWORD}
 MYSQL_DATABASE=${DB_NAME}
-MYSQL_LOGIN_MODE=$(grep '^MYSQL_LOGIN_MODE=' "$MYSQL_RUNTIME_FILE" | cut -d= -f2-)
-EOF2
+EOF
+  chmod 600 "$MYSQL_RUNTIME_FILE"
+
+  write_mysql_client_conf
+
+  cat > "$APP_ROOT/.db_credentials" <<EOF
+MYSQL_HOST=127.0.0.1
+MYSQL_PORT=3306
+MYSQL_USER=${DB_APP_USER}
+MYSQL_PASSWORD=${DB_APP_PASSWORD}
+MYSQL_DATABASE=${DB_NAME}
+MYSQL_LOGIN_MODE=password
+EOF
   chmod 600 "$APP_ROOT/.db_credentials"
 
-  log_success "MySQL 基础配置完成（应用将直接使用 root 账号）"
+  if mysql -h127.0.0.1 -P3306 -u"${DB_APP_USER}" -p"${DB_APP_PASSWORD}" -D"${DB_NAME}" -e "SELECT 1" >/dev/null 2>&1; then
+    log_success "MySQL 配置完成（应用将使用 ${DB_APP_USER} + TCP 连接）"
+  else
+    log_error "应用用户创建成功，但 TCP 验证失败"
+    exit 1
+  fi
 }
 
 setup_code() {
@@ -191,6 +208,7 @@ setup_code() {
   cd "$APP_ROOT"
 
   local repo_url="https://github.com/quanta2015/React-Video.git"
+
   if [ -d "$APP_DIR/.git" ]; then
     cd "$APP_DIR"
     git fetch --all --prune || true
@@ -204,16 +222,18 @@ setup_code() {
 
   cd "$APP_DIR"
   npm install
-  npm run build || log_warn "TypeScript 构建失败，稍后将直接用 ts-node 运行"
+
+  if npm run build; then
+    log_success "项目构建成功"
+  else
+    log_warn "TypeScript 构建失败，项目将继续按 npm run server / ts-node 方式运行"
+  fi
 }
 
 patch_runtime_defaults() {
   log_info "写入运行时修复补丁..."
 
-  # 1) 数据库初始化：启动时自动建表，而不是只测连通性
-  cat > "$APP_DIR/src/database/index.ts" <<'EOF2'
-import fs from 'fs';
-import path from 'path';
+  cat > "$APP_DIR/src/database/index.ts" <<'EOF'
 import mysql from 'mysql2/promise';
 
 let pool: mysql.Pool | null = null;
@@ -223,46 +243,21 @@ export function getPool(): mysql.Pool {
     pool = mysql.createPool({
       host: process.env.MYSQL_HOST || '127.0.0.1',
       port: parseInt(process.env.MYSQL_PORT || '3306', 10),
-      user: process.env.MYSQL_USER || 'root',
-      password: process.env.MYSQL_PASSWORD || '',
+      user: process.env.MYSQL_USER || 'video_app',
+      password: process.env.MYSQL_PASSWORD || '12345678',
       database: process.env.MYSQL_DATABASE || 'video_generator',
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0,
-      multipleStatements: true,
     });
   }
   return pool;
 }
 
-function splitSqlStatements(sql: string): string[] {
-  return sql
-    .replace(/\r/g, '\n')
-    .split(/;\s*\n/)
-    .map((s) => s.trim())
-    .filter(Boolean)
-    .filter((s) => !s.startsWith('--'));
-}
-
 export async function initDatabase(): Promise<void> {
   const p = getPool();
   await p.query('SELECT 1');
-
-  const schemaPath = path.resolve(process.cwd(), 'schema.sql');
-  if (!fs.existsSync(schemaPath)) {
-    console.warn(`[Database] schema.sql 不存在，跳过建表: ${schemaPath}`);
-    return;
-  }
-
-  const schema = fs.readFileSync(schemaPath, 'utf-8')
-    .replace(/CREATE DATABASE IF NOT EXISTS\s+`?video_generator`?.*?;/i, '')
-    .replace(/USE\s+`?video_generator`?\s*;/i, '');
-
-  const statements = splitSqlStatements(schema);
-  for (const statement of statements) {
-    await p.query(statement);
-  }
-  console.log('[Database] schema.sql 已自动执行');
+  console.log('[Database] 数据库连接成功');
 }
 
 export async function closeDatabase(): Promise<void> {
@@ -271,48 +266,124 @@ export async function closeDatabase(): Promise<void> {
     pool = null;
   }
 }
-EOF2
+EOF
 
-  # 2) 智能分句默认关闭 AI，避免火山引擎 AI/Ark 无 key 或响应慢时卡在 30%
-  python3 - <<'EOF2'
+  cat > "$APP_DIR/src/server.ts" <<'EOF'
+import 'dotenv/config';
+import express from 'express';
+import { createRouter } from './api/routes';
+import { hmacAuth } from './api/auth';
+import { JobDispatcher } from './queue/JobDispatcher';
+import { initDatabase, closeDatabase } from './database';
+
+const PORT = Number(process.env.PORT || 3000);
+
+async function main() {
+  console.log('[Server] 启动中...');
+  console.log(`[Server] PORT=${PORT}`);
+
+  console.log('[Server] 开始初始化数据库...');
+  await initDatabase();
+  console.log('[Server] 数据库初始化完成');
+
+  const app = express();
+  app.use(express.json());
+
+  app.get('/health', (_req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  });
+
+  app.get('/', (_req, res) => {
+    res.type('text/plain').send('server is running');
+  });
+
+  const server = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`[Server] HTTP 服务启动: http://0.0.0.0:${PORT}`);
+  });
+
+  console.log('[Server] 开始初始化任务分发器...');
+  const dispatcher = new JobDispatcher();
+  console.log('[Server] 任务分发器初始化完成');
+
+  app.use('/api', hmacAuth, createRouter(dispatcher));
+  console.log('[Server] API 路由注册完成');
+  console.log('[Server] 任务将通过 Redis 分发给 Worker 处理');
+
+  const shutdown = async () => {
+    console.log('\n[Server] 收到关闭信号，正在优雅关闭...');
+    try {
+      await dispatcher.close();
+    } catch (err) {
+      console.error('[Server] 关闭 dispatcher 失败:', err);
+    }
+
+    server.close(async () => {
+      try {
+        await closeDatabase();
+      } catch (err) {
+        console.error('[Server] 关闭数据库失败:', err);
+      }
+      console.log('[Server] 服务已关闭');
+      process.exit(0);
+    });
+  };
+
+  process.on('SIGTERM', shutdown);
+  process.on('SIGINT', shutdown);
+}
+
+main().catch((err) => {
+  console.error('[Server] 启动失败:', err);
+  process.exit(1);
+});
+EOF
+
+  python3 - <<'EOF'
 from pathlib import Path
+
 p = Path('/opt/video-demo/nodejs/src/services/VideoProcessor.ts')
-text = p.read_text(encoding='utf-8')
-old = "const useAI = options.useAI !== false;"
-new = "const useAI = options.useAI === true; // 修复：默认关闭 AI 分句，显式传 true 才调用火山引擎 AI"
-if old in text:
-    text = text.replace(old, new, 1)
-    p.write_text(text, encoding='utf-8')
-EOF2
+if p.exists():
+    text = p.read_text(encoding='utf-8')
+    old = "const useAI = options.useAI !== false;"
+    new = "const useAI = options.useAI === true; // 修复：默认关闭 AI 分句，显式传 true 才调用火山引擎 AI"
+    if old in text:
+        text = text.replace(old, new, 1)
+        p.write_text(text, encoding='utf-8')
+EOF
+}
+
+verify_patched_files() {
+  log_info "校验补丁文件..."
+
+  if grep -qE 'EOF2|python3 - <<|from pathlib import Path|# 2\)' "$APP_DIR/src/database/index.ts"; then
+    log_error "src/database/index.ts 内容异常，疑似 heredoc 写入失败"
+    sed -n '1,120p' "$APP_DIR/src/database/index.ts" || true
+    exit 1
+  fi
+
+  if grep -qE 'EOF2|python3 - <<|from pathlib import Path|# 2\)' "$APP_DIR/src/server.ts"; then
+    log_error "src/server.ts 内容异常，疑似 heredoc 写入失败"
+    sed -n '1,160p' "$APP_DIR/src/server.ts" || true
+    exit 1
+  fi
+
+  log_success "补丁文件校验通过"
 }
 
 setup_env() {
   log_info "生成 .env ..."
 
-  # shellcheck disable=SC1090
-  . "$MYSQL_RUNTIME_FILE"
-  local mysql_password_line=""
-  if [ "$MYSQL_LOGIN_MODE" = "password" ]; then
-    mysql_password_line="MYSQL_PASSWORD=${MYSQL_ROOT_PASSWORD}"
-  else
-    mysql_password_line="MYSQL_PASSWORD="
-  fi
-
   local api_secret
   api_secret=$(openssl rand -hex 32)
 
-  cat > "$APP_DIR/.env" <<EOF2
+  cat > "$APP_DIR/.env" <<EOF
 # ============================================
-# 火山引擎 ASR 配置（必填）
+# 火山引擎 ASR 配置（按业务需要填写）
 # ============================================
-VOLCENGINE_APP_ID=
-VOLCENGINE_ACCESS_TOKEN=
+VOLCENGINE_APP_ID=6456990513
+VOLCENGINE_ACCESS_TOKEN=0NZqwSrxfbymzz4UgnveU2JTDxBYIkIm
+VOLCENGINE_AI_API_KEY=a396a7c4-9928-4195-8120-ec954099d60e
 
-# ============================================
-# 火山引擎 AI / Ark 配置（可选）
-# 不填则默认不启用 AI 分句
-# ============================================
-VOLCENGINE_AI_API_KEY=
 
 # ============================================
 # 阿里云 OSS 配置（可选）
@@ -326,12 +397,12 @@ ALIYUN_OSS_PUBLIC_BASE_URL=
 ALIYUN_OSS_TIMEOUT_MS=120000
 
 # ============================================
-# MySQL 数据库配置（统一使用 root）
+# MySQL 数据库配置（统一使用应用用户）
 # ============================================
 MYSQL_HOST=127.0.0.1
 MYSQL_PORT=3306
-MYSQL_USER=root
-${mysql_password_line}
+MYSQL_USER=${DB_APP_USER}
+MYSQL_PASSWORD=${DB_APP_PASSWORD}
 MYSQL_DATABASE=${DB_NAME}
 
 # ============================================
@@ -350,10 +421,10 @@ API_SECRET=${api_secret}
 # ============================================
 PORT=${APP_PORT}
 NODE_ENV=production
-EOF2
+EOF
 
   chmod 600 "$APP_DIR/.env"
-  log_success ".env 已生成"
+  log_success ".env 已生成（已写入应用用户数据库配置）"
 }
 
 init_database() {
@@ -366,12 +437,7 @@ init_database() {
   fi
 
   mysql_import_file "$APP_DIR/schema.sql"
-
-  # 再次验证核心表
-  if [ -f "$MYSQL_CONF_FILE" ]; then
-    mysql --defaults-extra-file="$MYSQL_CONF_FILE" -D "$DB_NAME" -N -B -e "SHOW TABLES LIKE 'video_tasks';" | grep -q '^video_tasks$'
-  fi
-
+  mysql --defaults-extra-file="$MYSQL_APP_CONF_FILE" -N -B -e "SHOW TABLES LIKE 'video_tasks';" | grep -q '^video_tasks$'
   log_success "数据库建表完成"
 }
 
@@ -379,21 +445,21 @@ setup_pm2() {
   log_info "配置 PM2..."
   cd "$APP_DIR"
 
-  cat > ecosystem.config.js <<'EOF2'
+  cat > ecosystem.config.js <<EOF
 module.exports = {
   apps: [
     {
       name: 'video-server',
-      cwd: '/opt/video-demo/nodejs',
+      cwd: '${APP_DIR}',
       script: 'npm',
       args: 'run server',
       env: {
         NODE_ENV: 'production',
-        PORT: 3000
+        PORT: ${APP_PORT}
       },
-      error_file: '/var/log/video-demo/server-error.log',
-      out_file: '/var/log/video-demo/server-out.log',
-      log_file: '/var/log/video-demo/server-combined.log',
+      error_file: '${LOG_DIR}/server-error.log',
+      out_file: '${LOG_DIR}/server-out.log',
+      log_file: '${LOG_DIR}/server-combined.log',
       time: true,
       instances: 1,
       autorestart: true,
@@ -401,15 +467,15 @@ module.exports = {
     },
     {
       name: 'video-worker',
-      cwd: '/opt/video-demo/nodejs',
+      cwd: '${APP_DIR}',
       script: 'npm',
       args: 'run worker -- --concurrency 2',
       env: {
         NODE_ENV: 'production'
       },
-      error_file: '/var/log/video-demo/worker-error.log',
-      out_file: '/var/log/video-demo/worker-out.log',
-      log_file: '/var/log/video-demo/worker-combined.log',
+      error_file: '${LOG_DIR}/worker-error.log',
+      out_file: '${LOG_DIR}/worker-out.log',
+      log_file: '${LOG_DIR}/worker-combined.log',
       time: true,
       instances: 1,
       autorestart: true,
@@ -417,7 +483,7 @@ module.exports = {
     }
   ]
 }
-EOF2
+EOF
 
   pm2 delete video-server video-worker >/dev/null 2>&1 || true
   pm2 start ecosystem.config.js
@@ -431,7 +497,7 @@ setup_nginx() {
 
   rm -f /etc/nginx/sites-enabled/default
 
-  cat > /etc/nginx/sites-available/video-demo <<'EOF2'
+  cat > /etc/nginx/sites-available/video-demo <<'EOF'
 server {
     listen 80 default_server;
     server_name _;
@@ -441,7 +507,6 @@ server {
 
     client_max_body_size 500M;
 
-    # API
     location /api/ {
         proxy_pass http://127.0.0.1:3000;
         proxy_http_version 1.1;
@@ -456,14 +521,12 @@ server {
         proxy_send_timeout 600s;
     }
 
-    # 健康检查
     location = /health {
         proxy_pass http://127.0.0.1:3000/health;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
     }
 
-    # 任务输出与静态资源
     location /public/ {
         alias /opt/video-demo/public/;
         autoindex off;
@@ -478,26 +541,30 @@ server {
         add_header Cache-Control "public";
     }
 
-    # 根路径给出可见响应，避免 404/空白页
     location = / {
         default_type text/plain;
         return 200 "React-Video API is running\nhealth: /health\napi: /api/\n";
     }
 }
-EOF2
+EOF
 
-  # 修复 map 指令位置：放到 nginx.conf 的 http 段中更稳妥
-  if ! grep -q 'connection_upgrade' /etc/nginx/nginx.conf; then
-    python3 - <<'EOF2'
+  if ! grep -q 'map $http_upgrade $connection_upgrade' /etc/nginx/nginx.conf; then
+    python3 - <<'EOF'
 from pathlib import Path
+
 p = Path('/etc/nginx/nginx.conf')
 text = p.read_text(encoding='utf-8')
 needle = 'http {'
-insert = "http {\n    map $http_upgrade $connection_upgrade {\n        default upgrade;\n        '' close;\n    }\n"
+insert = """http {
+    map $http_upgrade $connection_upgrade {
+        default upgrade;
+        '' close;
+    }
+"""
 if needle in text and 'map $http_upgrade $connection_upgrade' not in text:
     text = text.replace(needle, insert, 1)
     p.write_text(text, encoding='utf-8')
-EOF2
+EOF
   fi
 
   ln -sf /etc/nginx/sites-available/video-demo /etc/nginx/sites-enabled/video-demo
@@ -516,9 +583,32 @@ setup_firewall() {
 
 health_check() {
   log_info "执行部署后自检..."
-  sleep 3
-  curl -fsS "http://127.0.0.1:${APP_PORT}/health" >/dev/null
-  mysql --defaults-extra-file="$MYSQL_CONF_FILE" -D "$DB_NAME" -N -B -e "SELECT COUNT(*) FROM video_tasks;" >/dev/null
+
+  local ok=0
+  local i
+
+  for i in {1..30}; do
+    if curl -fsS "http://127.0.0.1:${APP_PORT}/health" >/dev/null 2>&1; then
+      ok=1
+      break
+    fi
+    sleep 2
+  done
+
+  if [ "$ok" != "1" ]; then
+    log_error "应用未在 ${APP_PORT} 端口成功提供 /health"
+    echo "---------- pm2 status ----------"
+    pm2 status || true
+    echo "---------- pm2 logs video-server ----------"
+    pm2 logs video-server --lines 120 --nostream || true
+    echo "---------- ss -lntp ----------"
+    ss -lntp | grep -E ":${APP_PORT}|node" || true
+    echo "---------- lsof ----------"
+    lsof -iTCP -sTCP:LISTEN -P -n | grep -E ":${APP_PORT}|node" || true
+    exit 1
+  fi
+
+  mysql --defaults-extra-file="$MYSQL_APP_CONF_FILE" -N -B -e "SELECT COUNT(*) FROM video_tasks;" >/dev/null
   redis-cli ping | grep -q PONG
   log_success "健康检查通过"
 }
@@ -526,9 +616,10 @@ health_check() {
 create_report() {
   local ip
   ip=$(hostname -I | awk '{print $1}')
-  cat > "$APP_ROOT/DEPLOYMENT_REPORT.txt" <<EOF2
+
+  cat > "$APP_ROOT/DEPLOYMENT_REPORT.txt" <<EOF
 ================================================================================
-React-Video 部署报告（修正版）
+React-Video 部署报告（应用用户版）
 ================================================================================
 部署时间：$(date '+%Y-%m-%d %H:%M:%S')
 服务器 IP：${ip}
@@ -540,15 +631,20 @@ React-Video 部署报告（修正版）
 数据库：
 - Host: 127.0.0.1
 - Port: 3306
-- User: root
+- User: ${DB_APP_USER}
+- Password: ${DB_APP_PASSWORD}
 - Database: ${DB_NAME}
-- MySQL 客户端配置文件：${MYSQL_CONF_FILE}
+- MySQL 应用客户端配置文件：${MYSQL_APP_CONF_FILE}
 
 关键修复：
-1. 应用数据库用户统一改为 root
-2. 部署时执行 schema.sql 自动建表
-3. Nginx 移除默认站点并修正反向代理/根路径
-4. 默认关闭 AI 分句，避免任务卡在 30% 的“智能分句 & 渲染预准备”阶段
+1. 不再要求输入 MySQL root 密码
+2. 自动创建应用数据库用户 ${DB_APP_USER}
+3. 应用统一使用 ${DB_APP_USER} + 密码 + TCP
+4. 部署时执行 schema.sql 自动建表
+5. 启动时数据库只做连通性检查，不重复执行 schema.sql
+6. server.ts 改为先启动 /health，再初始化 JobDispatcher
+7. 默认关闭 AI 分句，避免任务卡在 30%
+8. 健康检查失败时输出 PM2 日志和监听端口
 
 常用命令：
 - pm2 status
@@ -557,7 +653,7 @@ React-Video 部署报告（修正版）
 - systemctl status nginx
 - systemctl status mysql
 - systemctl status redis-server
-EOF2
+EOF
 }
 
 main() {
@@ -570,6 +666,7 @@ main() {
   setup_mysql
   setup_code
   patch_runtime_defaults
+  verify_patched_files
   setup_env
   init_database
   setup_pm2
@@ -580,4 +677,4 @@ main() {
   log_success "部署完成：$APP_ROOT/DEPLOYMENT_REPORT.txt"
 }
 
-main 
+main

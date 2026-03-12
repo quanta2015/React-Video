@@ -2,6 +2,5 @@ node_modules
 output
 dist
 source
-*.ttf
 *.wav
 .env
